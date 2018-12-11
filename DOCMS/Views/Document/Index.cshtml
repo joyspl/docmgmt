@@ -1,0 +1,359 @@
+﻿@model IEnumerable<Document>
+@{
+    ViewBag.Title = "Document Manager";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section csslib {
+    <link href="@Url.DatedContent("~/css/bootstrap-datetimepicker.min.css")" rel="stylesheet" />
+}
+
+<section class="tables">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <!--  <div class="card-close">
+                          <div class="dropdown">
+                              <button type="button" id="closeCard" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></button>
+                              <div aria-labelledby="closeCard" class="dropdown-menu has-shadow">
+                                  <a href="@(Url.Action("New", "Document", new { area = "" }))" class="dropdown-item edit"><i class="fa fa-gear"></i>Add new Document</a>
+                              </div>
+                          </div>
+                      </div> -->
+                    <div class="card-close">
+                        <div class="dropdown">
+                            <a href="@(Url.Action("New", "Document", new { area = "" }))" class="dropdown-item edit" id="lnkDocument"><i class="fa fa-file-text" aria-hidden="true"></i>&nbsp;Add new Document</a>
+                        </div>
+                    </div>
+
+                    <div class="card-header d-flex align-items-center">
+                        @*@if (GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin)
+                            {*@
+                        @*<h3 class="h4">
+                                <select id="ddlApproval" class="form-control">
+                                    <option value="0">Show All</option>
+                                    <option value="1">Show Only Approved</option>
+                                    <option value="2">Show Only Not Approved</option>
+                                </select>
+                            </h3>*@
+                        @*}
+                            else
+                            {
+                                <h3 class="h4">&nbsp;</h3>
+                            }*@
+                        <h3 class="h4">&nbsp;</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4" style="max-height: 330px; overflow-y: auto;">
+                                @{ Html.RenderPartial("_Search"); }
+                            </div>
+                            <div class="col-lg-8 dvTable" style="max-height: 330px; overflow-y: auto;">
+                                <table class="table table-striped table-hover table-bordered table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Is&nbsp;Approved</th>
+                                            <th>Document&nbsp;Number</th>
+                                            <th>Document&nbsp;Date</th>
+                                            <th>Financial&nbsp;Year</th>
+                                            <th>Department</th>
+                                            <th>Project</th>
+                                            <th>Sub-Type</th>
+                                            <th>Attachments</th>
+                                            <th>Created&nbsp;By</th>
+                                            <th>Created&nbsp;On</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @{ Html.RenderPartial("_List", Model); }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="pull-right">
+                                    <span class="text-primary" id="spnTotRec"><small>Total Record(s): <strong>@ViewBag.TotalRecords</strong></small></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script src="@Url.DatedContent("~/js/moment-with-locales.min.js")"></script>
+    <script src="@Url.DatedContent("~/js/bootstrap-datetimepicker.min.js")"></script>
+    <script>
+        var isSysadmin = @(GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin ? 1 : 0);
+        @*var jsModel = "@Html.Raw(HttpUtility.JavaScriptStringEncode(@Newtonsoft.Json.JsonConvert.SerializeObject(GlobalSettings.oUserPermission, new Newtonsoft.Json.Converters.IsoDateTimeConverter() { DateTimeFormat = "dd/MM/yyyy HH:mm:ss" })))";*@
+
+        var _grpPageNumber = 1;
+        var _grpTotalCount = @(ViewBag.TotalRecords);
+        var _grpPageSize = @(ViewBag.pageSize);
+
+        function GetLoadedCount () {
+            if (_grpTotalCount > (_grpPageNumber * _grpPageSize)) {
+                _grpPageNumber++;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @*function HasApprovalPermission() {
+            var s = getObjects(JSON.parse(jsModel), 'SubTypeID', ($("#ddlSubType").val() * 1));
+            var haspermission = isSysadmin > 0 ? 1 : s[0].HasFullPermission;
+            var haspermission = isSysadmin > 0 ? true : false;
+            return haspermission;
+        }*@
+
+        function GetData(isglobal) {
+            if (isglobal) {
+                $("div.dvTable").scrollTop(0);
+                _grpPageNumber = 1;
+            }
+
+            $.ajax({
+                url: "@(Url.Action("GetTotalDocCount", "Document", new { area = "" }))",
+                data: {
+                    firstload: 0,
+                    pageNo: _grpPageNumber,
+                    dtfrm: $("#txtDateFrom").val().trim(),
+                    dtto: $("#txtDateTo").val().trim(),
+                    finyear: ($("#ddlFinYear").val() * 1),
+                    orgid: ($("#ddlOrganization").val() * 1),
+                    deptid: ($("#ddlDepartment").val() * 1),
+                    prjid: ($("#ddlProject").val() * 1),
+                    subtypeid: ($("#ddlSubType").val() * 1),
+                    docno: $("#txtDocNumber").val().trim().toUpperCase(),
+                    info1: $("#txtAttachInfo1").val().trim().toUpperCase(),
+                    info2: $("#txtAttachInfo2").val().trim().toUpperCase(),
+                    info3: $("#txtAttachInfo3").val().trim().toUpperCase(),
+                    appstt: ($("#ddlApproval").val() * 1)
+                },
+                type: "GET",
+                global: isglobal
+            }).done(function (data) {
+                _grpTotalCount = data.Message;
+                $("#spnTotRec").empty().html("<small>Total Record(s): <strong>" + data.Message + "</strong></small>");
+                $.ajax({
+                    url: "@(Url.Action("Index", "Document", new { area = "" }))",
+                    data: {
+                        firstload: 0,
+                        pageNo: _grpPageNumber,
+                        dtfrm: $("#txtDateFrom").val().trim(),
+                        dtto: $("#txtDateTo").val().trim(),
+                        finyear: ($("#ddlFinYear").val() * 1),
+                        orgid: ($("#ddlOrganization").val() * 1),
+                        deptid: ($("#ddlDepartment").val() * 1),
+                        prjid: ($("#ddlProject").val() * 1),
+                        subtypeid: ($("#ddlSubType").val() * 1),
+                        docno: $("#txtDocNumber").val().trim().toUpperCase(),
+                        info1: $("#txtAttachInfo1").val().trim().toUpperCase(),
+                        info2: $("#txtAttachInfo2").val().trim().toUpperCase(),
+                        info3: $("#txtAttachInfo3").val().trim().toUpperCase(),
+                        appstt: ($("#ddlApproval").val() * 1)
+                    },
+                    type: "GET",
+                    global: isglobal
+                }).done(function (result) {
+                    try {
+                        if (result.Success !== undefined && result.Success <= 0) {
+                            alertInfo("error", result.Message, false);
+                        } else {
+                            if (isglobal) {
+                                $("table.table-bordered > tbody").empty().append(result);
+                            } else {
+                                $("table.table-bordered > tbody").append(result);
+                            }
+                            try {
+                                $("#nodataHeading").each(function (i) {
+                                    $('[id="' + this.id + '"]').slice(1).remove();
+                                });
+
+                                if ($("table.table-bordered > tbody tr.trdta").length > 0) {
+                                    try {
+                                        $("#nodataHeading").remove();
+                                    } catch (cex) { }
+                                }
+                            } catch (ex) { }
+                        }
+                    } catch (ex) { }
+                }).fail(function (jqXHR, textStatus) {
+                    alertInfo("error", "Error detected", false);
+                });
+            });
+        }
+
+        $(function () {
+            $(".datepicker").datetimepicker({
+                format: "DD/MM/YYYY",
+                ignoreReadonly: true
+            });
+
+            $("div.dvTable").unbind("scroll");
+            $("div.dvTable").scroll(function () {
+                if (Math.ceil($("div.dvTable").scrollTop()) >= Math.ceil($("table.table-bordered").height() - $("div.dvTable")[0].clientHeight) && GetLoadedCount()) {
+                    GetData(false);
+                }
+            });
+
+            $(document).keypress(function (event) {
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if(keycode == "13"){
+                    //alertInfo("success", "You pressed enter key in somewhere", false);
+                    $("#btnSearch").trigger("click");
+                }
+            });
+        });
+
+        $(document).off("click", ".chkIsApproved").on("click", ".chkIsApproved", function (e) {
+            var $this = $(this);
+            if (isSysadmin > 0) {
+                var docid = $(this).attr("data-docid");
+                var isapproved = $(this).is(":checked") ? 1 : 0;
+                $.ajax({
+                    url: "@Url.Action("SetApproval", "Document", new { area = "" })?key=" + docid + "&key1=" + isapproved,
+                    type: "GET"
+                }).done(function (data) {
+                    if (data.Success > 0) {
+                        alertInfo("success", data.Message, false);
+                    } else {
+                        alertInfo("error", data.Message, false);
+                        if ($($this).is(":checked")) {
+                            $($this).prop("checked", false);
+                        } else {
+                            $($this).prop("checked", true);
+                        }
+                    }
+                });
+            } else {
+                alertInfo("error", "You have not enough permission to change approval status of any document", false);
+                if ($($this).is(":checked")) {
+                    $($this).prop("checked", false);
+                } else {
+                    $($this).prop("checked", true);
+                }
+            }
+        });
+
+        $(document).off("click", "#btnSearch").on("click", "#btnSearch", function (e) {
+            GetData(true);
+        });
+
+        $(document).off("click", "#btnReset").on("click", "#btnReset", function (e) {
+            window.location.href = "@Url.Action("Index", "Document", new { area = "" })";
+        });
+
+        $(document).off("click", ".adocdel").on("click", ".adocdel", function (e) {
+            var $this = $(this);
+            var docid = $(this).attr("data-docid");
+            $.ajax({
+                url: "@Url.Action("DocumentDelete", "Document", new { area = "" })?did=" + docid,
+                type: "GET"
+            }).done(function (data) {
+                if (data.Success > 0) {
+                    alertInfo("success", data.Message, false);
+                    $($this).closest("tr.trdta").remove();
+                } else {
+                    alertInfo("error", data.Message, false);
+                }
+            });
+        });
+
+        $(document).off("change", "#ddlDepartment").on("change", "#ddlDepartment", function (e) {
+            var deptid = $(this).val();
+            if (deptid != "0") {
+                $.ajax({
+                    url: "@Url.Action("LoadDropdownOnDemand", "Document", new { area = "" })" + "?id=" + deptid + "&param=@((int)Dropdown.Project)",
+                    type: "GET"
+                }).done(function (data) {
+                    if (data != null) {
+                        $("#dvProject").empty().append("<select id=\"ddlProject\" class=\"form-control\"></select>");
+                        var list = document.getElementById("ddlProject");
+                        list.innerHTML = "";
+                        for (var i = 0; i < data.length; i++) {
+                            list.add(new Option(data[i].Text, data[i].Value));
+                        }
+                    }
+                });
+            } else {
+                try {
+                    var list = document.getElementById("ddlProject");
+                    list.innerHTML = "";
+                    list.add(new Option("Select Project", "0"));
+
+                    var list = document.getElementById("ddlSubType");
+                    list.innerHTML = "";
+                    list.add(new Option("Select Project Sub-Type", "0"));
+                } catch (ex) { }
+            }
+        });
+
+        $(document).off("change", "#ddlProject").on("change", "#ddlProject", function (e) {
+            var prjid = $(this).val();
+            if (prjid != "0") {
+                $.ajax({
+                    url: "@Url.Action("LoadDropdownOnDemand", "Document", new { area = "" })" + "?id=" + prjid + "&param=@((int)Dropdown.SubType)",
+                    type: "GET"
+                }).done(function (data) {
+                    if (data != null) {
+                        $("#ddlSubType").empty().append("<select id=\"ddlSubType\" class=\"form-control\"></select>");
+                        var list = document.getElementById("ddlSubType");
+                        list.innerHTML = "";
+                        for (var i = 0; i < data.length; i++) {
+                            list.add(new Option(data[i].Text, data[i].Value));
+                        }
+                    }
+                });
+            } else {
+                try {
+                    var list = document.getElementById("ddlSubType");
+                    list.innerHTML = "";
+                    list.add(new Option("Select Project Sub-Type", "0"));
+                } catch (ex) { }
+            }
+        });
+
+        $(document).off("change", "#ddlSubType").on("change", "#ddlSubType", function (e) {
+            var subtypeid = $(this).val();
+            $.ajax({
+                url: "@Url.Action("GetAttachmentInfoMap", "Document", new { area = "" })?subtypeid=" + (subtypeid * 1),
+                type: "GET",
+                global: false
+            }).done(function (data) {
+                try {
+                    $("#txtAttachInfo1").removeAttr("placeholder").attr("placeholder", data.Info1);
+                    $("#txtAttachInfo2").removeAttr("placeholder").attr("placeholder", data.Info2);
+                    $("#txtAttachInfo3").removeAttr("placeholder").attr("placeholder", data.Info3);
+                } catch (ex) { }
+            });
+        });
+    </script>
+
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function() {
+            $(document).keyup(function(e) {
+                var key = (e.keyCode ? e.keyCode : e.charCode);
+                //alert(key);
+                switch (key) {
+                    case 120:
+                        openWebsite($('#lnkDocument'));
+                        break;
+                    default:
+                        ;
+                }
+            });
+
+            function openWebsite(obj) {
+                window.location.href = $(obj).attr("href");
+            }
+        });
+    </script>
+}

@@ -1,0 +1,115 @@
+﻿@using Newtonsoft.Json;
+@using DataLayer;
+@using System.Configuration;
+@model Document
+@{
+    ViewBag.Title = "Change Password";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+}
+
+<section class="client no-padding-top">
+    <div class="container-fluid">
+        <div class="row">
+
+            <section class="forms">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card">
+                                <div class="card-close">
+                                </div>
+                                <div class="card-header d-flex align-items-center">
+                                    <h3 class="h4">&nbsp;</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-horizontal">
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-12 form-control-label">Enter New Password*</label>
+                                            <div class="col-sm-12">
+                                                <input type="password" class="form-control" value="" id="newPass" />
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-sm-12 form-control-label">Enter Confirm Password*</label>
+                                            <div class="col-sm-12">
+                                                <input type="password" class="form-control" value="" id="confirmPass" />
+                                            </div>
+                                        </div>
+
+
+
+
+
+                                        <div class="line"></div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-6 offset-sm-6">
+
+                                                <button id="btnSave" class="btn btn-primary">Save</button>
+
+                                                <button id="btnCancel" class="btn btn-secondary" onclick="cancel();">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script>
+
+        $(document).off("click", "#btnSave").on("click", "#btnSave", function (e) {
+
+            var newPass = $("#newPass").val().trim(); // get new password value
+            var confirmPass = $("#confirmPass").val().trim();  // get confirm password value
+
+
+            if(newPass=='' || confirmPass=='') // check if new password and confirm password blank or not
+            {
+                alertInfo("error","Please put new password and confirm password",false);
+            }
+
+            else if(confirmPass!=newPass) // check if new password and confirm password same or not
+
+            {
+                alertInfo("error","Password and confirm password not matched!",false);
+            }
+
+            else {  // hit update password API and perform desired task
+
+
+
+                $.ajax({
+                    url: "@Url.Action("UpdatePassword", "ChangePassword", new { area = "" })",
+                    type: "GET",
+                    data: {password: newPass },
+                contentType: "application/json; charset=utf-8"
+            }).done(function (data) {
+		  $("#newPass").val("");
+                $("#confirmPass").val("");
+                alertInfo("success", "Password updated successfully", true    );
+
+
+            });
+
+            }
+
+        });
+
+        function cancel()  // if user click on cancel button, go to dashboard page
+        {
+            window.location.href = "@(Url.Action("Index", "Dashboard", new { area = "" }))";
+        }
+    </script>
+}

@@ -1,0 +1,51 @@
+﻿@model IEnumerable<AttachmentFile>
+
+<table class="table table-striped table-hover table-bordered table-condensed" id="tblAttach">
+    <thead>
+        <tr>
+            @*<th>Attachment #</th>*@
+            <th>File Name</th>
+            <th>File Size</th>
+            <th id="info1">Info</th>
+            <th id="info3">More Info</th>
+            <th id="info2">Additional Info</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Count() > default(int))
+        {
+            foreach (var item in Model)
+            {
+                <tr class="tbratt">
+                    @*<td>@item.AttachmentID</td>*@
+                    <td title="@string.Format("{0}{1}", item.FileName, item.FileExtenssion)">@(Utility.Truncate(string.Format("{0}{1}", item.FileName, item.FileExtenssion)))</td>
+                    @try
+                    {
+                        <td>@Utility.SizeSuffix(Convert.ToInt64(item.FileSizeBytes))</td>
+                    }
+                    catch (Exception)
+                    {
+                        <td>@(default(long).ToString() + " KB")</td>
+                    }
+                    <td title="@(string.IsNullOrWhiteSpace(item.AttachInfo1) ? "--" : item.AttachInfo1)">@(string.IsNullOrWhiteSpace(item.AttachInfo1) ? "--" : Utility.Truncate(item.AttachInfo1))</td>
+                    <td title="@(string.IsNullOrWhiteSpace(item.AttachInfo2) ? "--" : item.AttachInfo2)">@(string.IsNullOrWhiteSpace(item.AttachInfo2) ? "--" : Utility.Truncate(item.AttachInfo2))</td>
+                    <td title="@(string.IsNullOrWhiteSpace(item.AttachInfo3) ? "--" : item.AttachInfo3)">@(string.IsNullOrWhiteSpace(item.AttachInfo3) ? "--" : Utility.Truncate(item.AttachInfo3))</td>
+                    <td>
+                        <a title="Edit" href="@(Url.Action("AttachmentPreview", "Document", new { area = "" }))?id=@(Encryption64.EncryptQueryString(Convert.ToString(item.AttachmentID)))&iseditargument=@Encryption64.EncryptQueryString("1")"><i class="fa fa-pencil-square-o"></i></a>
+                        @*<a title="Edit" href="@(Url.Action("AttachmentPreview", "Document", new { area = "" }))?id=@(Encryption64.EncryptQueryString(Convert.ToString(item.AttachmentID)))&iseditargument=@Encryption64.EncryptQueryString("1")&docid=@(Encryption64.EncryptQueryString(item.DocID.ToString()))"><i class="fa fa-pencil-square-o"></i></a>*@
+                        @if (item.IsViewerSupported > default(int))
+                        {
+                            <a title="Preview" href="@(Url.Action("AttachmentPreview", "Document", new { area = "" }))?id=@(Encryption64.EncryptQueryString(Convert.ToString(item.AttachmentID)))&iseditargument=@Encryption64.EncryptQueryString(default(int).ToString())"><i class="fa fa-eye"></i></a>
+                        }
+                        else
+                        {
+                            <a title="Download" target="_blank" href="@(Url.Action("DowloadUnsupportedFile", "Document", new { area = "" }))?id=@(Encryption64.EncryptQueryString(Convert.ToString(item.AttachmentID)))"><i class="fa fa-download"></i></a>
+                        }
+                        <a class="adelattach" title="Delete" data-id="@(Encryption64.EncryptQueryString(Convert.ToString(item.AttachmentID)))" data-did="@Encryption64.EncryptQueryString(item.DocID.ToString())" href="javascript:void(0);"><i class="fa fa-trash-o"></i></a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

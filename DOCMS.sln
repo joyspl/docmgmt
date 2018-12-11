@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DOCMS", "DOCMS\DOCMS.csproj", "{940DB78A-2787-47F2-8835-31A8C804EB84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataLayer", "DataLayer\DataLayer.csproj", "{A97CD906-B736-4FC2-AB1A-0963B2EEDA3A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{940DB78A-2787-47F2-8835-31A8C804EB84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{940DB78A-2787-47F2-8835-31A8C804EB84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{940DB78A-2787-47F2-8835-31A8C804EB84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{940DB78A-2787-47F2-8835-31A8C804EB84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A97CD906-B736-4FC2-AB1A-0963B2EEDA3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A97CD906-B736-4FC2-AB1A-0963B2EEDA3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A97CD906-B736-4FC2-AB1A-0963B2EEDA3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A97CD906-B736-4FC2-AB1A-0963B2EEDA3A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

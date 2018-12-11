@@ -1,0 +1,95 @@
+﻿@using Newtonsoft.Json;
+@using System.Configuration;
+@model Organization
+@{
+    ViewBag.Title = "Organization Add/Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section csslib {
+    <link href="@(Url.Content("~/css/jquery-customselect.css"))" rel="stylesheet" />
+}
+
+<input type="hidden" id="hdnID" value="@Encryption64.EncryptQueryString(Model.OrgID.ToString())" />
+<section class="forms">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-close">
+                    </div>
+                    <div class="card-header d-flex align-items-center">
+                        <h3 class="h4">@ViewBag.Title</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-horizontal">
+                            <div class="form-group row">
+                                <label class="col-sm-3 form-control-label">Organization Name*</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" value="@(Model.OrganizationName)" id="txtOrgName" maxlength="200" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 form-control-label">Short Code*</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" value="@(Model.OrgShortName)" id="txtOrgShortcode" maxlength="10" />
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-3 form-control-label">Description</label>
+                                <div class="col-sm-6">
+                                    <textarea id="txtDescription" class="form-control">@(Model.OrgDescription)</textarea>
+                                </div>
+                            </div>
+                            <div class="line"></div>
+                            <div class="form-group row">
+                                <div class="col-sm-4 offset-sm-3">
+                                    @if (GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin || GlobalSettings.oUserData.RoleID == (long)Role.Admin)
+                                    {
+                                        <button id="btnSave" class="btn btn-primary">Save</button>
+                                    }
+                                    <button id="btnCancel" class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script src="@Url.Content("~/js/jquery-customselect.min.js")"></script>
+    <script>
+        $(document).off("click", "#btnCancel").on("click", "#btnCancel", function (e) {
+            window.location.href = "@Url.Action("Index", "Organization", new { area = "" })";
+        });
+
+        $(document).off("click", "#btnSave").on("click", "#btnSave", function (e) {
+            if ($("#txtOrgName").val() == "" || $("#txtOrgShortcode").val() == "") {
+                alertInfo("error", "Please complete all * marked fields", false);
+            } else {
+                var postData = new Object();
+                postData.EncryptedOrgID = $("#hdnID").val();
+                postData.OrganizationName = $("#txtOrgName").val().trim();
+                postData.OrgShortName = $("#txtOrgShortcode").val().trim();
+                postData.OrgDescription = $("#txtDescription").val().trim();
+
+                $.ajax({
+                    url: "@Url.Action("SaveData", "Organization", new { area = "" })",
+                    type: "POST",
+                    data: JSON.stringify(postData),
+                    contentType: "application/json; charset=utf-8"
+                }).done(function (data) {
+                    if (data.Success > 0) {
+                        alertInfo("success", data.Message, false);
+                        window.location.href = "@Url.Action("Index", "Organization", new { area = "" })";
+                    } else {
+                        alertInfo("error", data.Message, false);
+                    }
+                });
+            }
+        });
+    </script>
+}

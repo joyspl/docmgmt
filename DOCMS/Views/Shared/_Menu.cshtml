@@ -1,0 +1,32 @@
+﻿<nav class="side-navbar">
+    <div class="sidebar-header d-flex align-items-center">
+        <div class="avatar">
+            <img src="@Url.DatedContent("~/img/avatar-0.png")" alt="..." class="img-fluid rounded-circle" />
+        </div>
+        <div class="title">
+            <h1 class="h4">@(GlobalSettings.oUserData.FullName)</h1>
+            <p>@(GlobalSettings.oUserData.RoleName)</p>
+        </div>
+    </div>
+    <span class="heading">Menu</span>
+    <ul class="list-unstyled">
+        <li><a href="@(Url.Action("Index", "ChangePassword", new { area = "" }))"><i class="fa fa-file-text-o"></i>Change Password</a></li>
+        <li id="liHome"><a href="@(Url.Action("Index", "Dashboard", new { area = "" }))"><i class="fa fa-home"></i>Dashboard</a></li>
+        @*@if (GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin || GlobalSettings.oUserData.RoleID == (long)Role.Admin)*@
+        @if (GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin)
+        {
+            <li>
+                <a href="#dashvariants" aria-expanded="false" data-toggle="collapse"><i class="fa fa-th-large"></i>Master Data</a>
+                <ul id="dashvariants" class="collapse list-unstyled">
+                    <li><a href="@(Url.Action("Index", "Organization", new { area = "" }))">Organization Manager</a></li>
+                    <li><a href="@(Url.Action("Index", "Location", new { area = "" }))">Location Manager</a></li>
+                    <li><a href="@(Url.Action("Index", "SubLocation", new { area = "" }))">Sub-Location Manager</a></li>
+                    <li><a href="@(Url.Action("Index", "Department", new { area = "" }))">Department Manager</a></li>
+                    <li><a href="@(Url.Action("Index", "Project", new { area = "" }))">Project Manager</a></li>
+                    <li><a href="@(Url.Action("Index", "Customer", new { area = "" }))">Project Sub-Type Manager</a></li>
+                </ul>
+            </li>
+        }
+        <li><a href="@(Url.Action("Index", "Document", new { area = "" }))"><i class="fa fa-file-text-o"></i>Document Manager</a></li>
+    </ul>
+</nav>

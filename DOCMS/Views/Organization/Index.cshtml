@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Organization>
+@{
+    ViewBag.Title = "Organization Manager";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="tables">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-close">
+                        <div class="dropdown">
+                            <button type="button" id="closeCard" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-ellipsis-v"></i></button>
+                            <div aria-labelledby="closeCard" class="dropdown-menu has-shadow">
+                                <a href="@(Url.Action("New", "Organization", new { area = "" }))" class="dropdown-item edit"><i class="fa fa-gear"></i>Add new Organization</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-header d-flex align-items-center">
+                        <h3 class="h4">&nbsp;</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-12 dvTable" style="max-height: 330px; overflow-y: auto;">
+                                <table class="table table-striped table-hover table-bordered table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>Organization&nbsp;Name</th>
+                                            <th>Short&nbsp;Code</th>
+                                            <th>Description</th>
+                                            <th>Created&nbsp;By</th>
+                                            <th>Created&nbsp;On</th>
+                                            <th>Modified&nbsp;By</th>
+                                            <th>Modified&nbsp;On</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model != null && Model.Count() > default(int))
+                                        {
+                                            foreach (var item in Model)
+                                            {
+                                                <tr>
+                                                    <td title="@item.OrganizationName">@Utility.Truncate(item.OrganizationName, 50)</td>
+                                                    <td>@item.OrgShortName</td>
+                                                    <td title="@item.OrgDescription">@Utility.Truncate(item.OrgDescription, 50)</td>
+                                                    <td>@item.CreatedByFullName</td>
+                                                    <td>@item.CreatedOn.ToString("dd/MM/yyyy hh:mm tt")</td>
+                                                    <td>@(!string.IsNullOrEmpty(item.ModifiedByFullName) ? item.ModifiedByFullName : "--")</td>
+                                                    <td>@(item.ModifiedBy > default(long) ? item.ModifiedOn.ToString("dd/MM/yyyy hh:mm tt") : "--")</td>
+                                                    <td>
+                                                        <a title="Edit" href="@(Url.Action("New", "Organization", new { area = "" }))?id=@(Encryption64.EncryptQueryString(Convert.ToString(item.OrgID)))"><i class="fa fa-pencil-square-o"></i></a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr class="text-center bg-blue-grey">
+                                                <td colspan="8">
+                                                    <label class="text-center">No item(s) found</label>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,139 @@
+﻿@using Newtonsoft.Json;
+@using System.Configuration;
+@model Tuple<AttachmentFile, int>
+@{
+    Layout = null;
+    string[] viewerSupportedFiles = ConfigurationManager.AppSettings["ViewerJSSupportedExtenssions"].Split(',');
+    bool fileIsImage = default(bool);
+    try
+    {
+        fileIsImage = Utility.GetMimeType(Model.Item1.FileExtenssion).StartsWith("image/");
+    }
+    catch { }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>@string.Format("{0}{1}", Model.Item1.FileName, Model.Item1.FileExtenssion) | @(ConfigurationManager.AppSettings["titlebarName"])</title>
+    <link rel="stylesheet" href="@Url.DatedContent("~/css/bootstrap.min.css")" />
+    <link href="@Url.DatedContent("~/css/loader.css")" rel="stylesheet" />
+    <link href="@Url.DatedContent("~/css/noty.css")" rel="stylesheet" />
+    <link rel="stylesheet" href="@Url.DatedContent("~/css/style.default.css")" id="theme-stylesheet" />
+    <link rel="stylesheet" href="@Url.DatedContent("~/css/custom.css")" />
+    <link rel="shortcut icon" href="@Url.DatedContent("~/img/favicon.ico")" />
+    <link href="@(Url.DatedContent("~/css/font-awesome.min.css"))" rel="stylesheet" />
+    <style>
+        body, html {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        #left {
+            float: left;
+            width: 35%;
+            background: #fff;
+            height: 100%;
+        }
+
+        #right {
+            width: auto; /* This is the default */
+            float: none;
+            margin-left: 35%;
+            background: #ccc;
+            height: 100%;
+        }
+
+        #right-iframe {
+            background: #ccc;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <!-- Tweaks for older IEs-->
+    <!--[if lt IE 9]>
+        <script src="@(Url.DatedContent("~/js/html5shiv.min.js"))"></script>
+        <script src="@(Url.DatedContent("~/js/respond.min.js"))"></script><![endif]-->
+</head>
+<body>
+    <input type="hidden" id="hdnAttachmentID" value="@Model.Item1.AttachmentID">
+    <input type="hidden" id="hdnDocID" value="@Model.Item1.DocID">
+    <div id="left">
+        @{ Html.RenderPartial("_AttachmentData", Model); }
+    </div>
+    <div id="right">
+        @if (viewerSupportedFiles.Contains(Model.Item1.FileExtenssion))
+        {
+            @*<iframe id="right-iframe" src="@ConfigurationManager.AppSettings["DocumentDomainWebUrl"]/ViewerJS/index.html#../@(Model.Item1.DocID)/@(string.Format("{0}{1}", Model.Item1.FileName, Model.Item1.FileExtenssion))"></iframe>*@
+            <object data="@ConfigurationManager.AppSettings["DocumentDomainWebUrl"]/@(Model.Item1.DocID)/@(string.Format("{0}{1}", Model.Item1.FileName, Model.Item1.FileExtenssion))" type="application/pdf" width="100%" height="100%">
+                If you are unable to view file, you can download from <a href="@ConfigurationManager.AppSettings["DocumentDomainWebUrl"]/@(Model.Item1.DocID)/@(string.Format("{0}{1}", Model.Item1.FileName, Model.Item1.FileExtenssion))">here</a> or download <a target="_blank" href="http://get.adobe.com/reader/">Adobe PDF Reader</a> to view the file.
+            </object>
+        }
+        else
+        {
+            <section class=" forms" style="text-align: center;">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            @if (fileIsImage)
+                            {
+                                @*<img class="img-fluid rounded img-thumbnail" id="imgFile" src="@Url.DatedContent(Model.Item1.FilePath)" alt="@Model.Item1.FileName" />*@
+                                <img class="img-fluid rounded img-thumbnail" id="imgFile" src="@ConfigurationManager.AppSettings["DocumentDomainWebUrl"]/@(Model.Item1.DocID)/@(string.Format("{0}{1}", Model.Item1.FileName, Model.Item1.FileExtenssion))" alt="@Model.Item1.FileName" />
+                            }
+                            else
+                            {
+                                <img class="img-fluid rounded img-thumbnail" id="imgFile" src="@Url.DatedContent("~/img/nopreview.jpg")" alt="@Model.Item1.FileName" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    </div>
+
+    <script src="@Url.DatedContent("~/js/jquery.min.js")"></script>
+    <script src="@Url.DatedContent("~/js/tether.min.js")"></script>
+    <script src="@Url.DatedContent("~/js/bootstrap.min.js")"></script>
+    <script src="@Url.DatedContent("~/js/jquery.cookie.js")"> </script>
+    <script src="@Url.DatedContent("~/js/jquery.validate.min.js")"></script>
+    <script src="@Url.DatedContent("~/js/jquery.blockUI.js")"></script>
+    <script src="@Url.DatedContent("~/js/select2.min.js")"></script>
+    <script src="@Url.DatedContent("~/js/front.js")"></script>
+    <script src="@Url.DatedContent("~/js/noty.js")"></script>
+    <script src="@Url.DatedContent("~/js/common.js")"></script>
+    <script src="@Url.DatedContent("~/js/stickeynote.js")"></script>
+
+    <script>
+        $(document).off("click", "#btnBack").on("click", "#btnBack", function (e) {
+            window.location.href = "@(string.Format("{0}?id={1}", Url.Action("New", "Document", new { area = "" }), Encryption64.EncryptQueryString(Model.Item1.DocID.ToString())))";
+        });
+
+        $(document).off("click", "#btnSaveAttachmentData").on("click", "#btnSaveAttachmentData", function (e) {
+            if ($("#txtAttachInfo1").val().trim() == "" && $("#txtAttachInfo2").val().trim() == "" && $("#txtAttachInfo3").val().trim() == "") {
+                alertInfo("warning", "Please add at least one information before saving", false);
+            } else {
+                var postData = new Object();
+                postData.AttachmentID = ($("#hdnAttachmentID").val() * 1);
+                postData.DocID = ($("#hdnDocID").val() * 1);
+                postData.AttachInfo1 = $("#txtAttachInfo1").val().trim().toUpperCase();
+                postData.AttachInfo2 = $("#txtAttachInfo2").val().trim().toUpperCase();
+                postData.AttachInfo3 = $("#txtAttachInfo3").val().trim().toUpperCase();
+
+                $.ajax({
+                    url: "@Url.Action("SaveAttachmentInfo", "Document", new { area = "" })",
+                    type: "POST",
+                    data: JSON.stringify(postData),
+                    contentType: "application/json; charset=utf-8"
+                }).done(function (data) {
+                    alertInfo(data.Success > 0 ? "success" : "error", data.Message, false);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

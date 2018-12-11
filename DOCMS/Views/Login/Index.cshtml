@@ -1,0 +1,119 @@
+﻿@using System.Configuration;
+@{
+    Layout = null;
+    ViewBag.Title = "Login";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    @*<title>@(ViewBag.Title) | @(ConfigurationManager.AppSettings["appName"])</title>*@
+    <title>@(ViewBag.Title) | @(ConfigurationManager.AppSettings["titlebarName"])</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="all,follow" />
+    <link rel="stylesheet" href="@(Url.DatedContent("~/css/bootstrap.min.css"))" />
+    <link href="@(Url.DatedContent("~/css/loader.css"))" rel="stylesheet" />
+    <link href="@(Url.DatedContent("~/css/noty.css"))" rel="stylesheet" />
+    <link href="@(Url.DatedContent("~/css/gapi.css"))" rel="stylesheet" />
+    <link rel="stylesheet" href="@(Url.DatedContent("~/css/style.default.css"))" id="theme-stylesheet" />
+    <link rel="stylesheet" href="@(Url.DatedContent("~/css/custom.css"))" />
+    <link rel="shortcut icon" href="@(Url.DatedContent("~/img/favicon.ico"))" />
+    <link href="@(Url.DatedContent("~/css/font-awesome.min.css"))" rel="stylesheet" />
+    @*<link href="@(Url.DatedContent("~/css/icons.css"))" rel="stylesheet" />*@
+    <!-- Tweaks for older IEs-->
+    <!--[if lt IE 9]>
+        <script src="@(Url.DatedContent("~/js/html5shiv.min.js"))"></script>
+        <script src="@(Url.DatedContent("~/js/respond.min.js"))"></script><![endif]-->
+</head>
+<body>
+    <div class="page login-page">
+        <div class="container d-flex align-items-center">
+            <div class="form-holder has-shadow">
+                <div class="row">
+                    <!-- Logo & Information Panel-->
+                    <div class="col-lg-6">
+                        <div class="info d-flex align-items-center">
+                            <div class="content">
+                                <div class="logo">
+                                    <h1>@(ConfigurationManager.AppSettings["appName"])</h1>
+                                </div>
+                                <p>@(ConfigurationManager.AppSettings["appDescription"]).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Form Panel    -->
+                    <div class="col-lg-6 bg-white">
+                        <div class="form d-flex align-items-center">
+                            <div class="content">
+                                <div id="login-form">
+                                    <div class="form-group">
+                                        <input id="txtUsername" type="text" name="txtUsername" class="input-material" />
+                                        <label for="txtUsername" class="label-material">Email</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <input id="txtPassword" type="password" name="txtPassword" class="input-material" />
+                                        <label for="txtPassword" class="label-material">Password</label>
+                                    </div>
+                                    <a id="btnLogin" href="javascript:void(0);" class="btn btn-primary">Login</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="copyrights text-center">
+            <p>Design by <a href="javascript:void(0);" class="external">@(ConfigurationManager.AppSettings["CompanyName"])</a></p>
+        </div>
+    </div>
+
+    <script src="@(Url.DatedContent("~/js/jquery.min.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/tether.min.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/bootstrap.min.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/jquery.cookie.js"))"> </script>
+    <script src="@(Url.DatedContent("~/js/jquery.validate.min.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/jquery.blockUI.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/front.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/noty.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/common.js"))"></script>
+    <script>
+
+        $('#txtPassword').keypress(function (e) {
+            var key = e.which;
+            if (key == 13)  // the enter key code
+            {
+                $("#btnLogin").trigger("click");
+                return false;
+            }
+        });
+
+
+        $(document).off("click", "#btnLogin").on("click", "#btnLogin", function (e) {
+            if ($("#txtUsername").val() == "" || $("#txtPassword").val() == "") {
+                alertInfo("error", "Please complete all mandatory field(s)", false);
+            } else {
+                $.ajax({
+                    url: "@(Url.Action("ValidateLogin", "Login", new { area = "" }))",
+                    type: "GET",
+                    data: { username: $("#txtUsername").val(), password: $("#txtPassword").val() },
+                    contentType: "application/json",
+                    success: function (data) {
+                        if (data.Success > 0) {
+                            window.location.href = "@(Url.Action("Index", "Dashboard", new { area = "" }))";
+                        } else {
+                            alertInfo("warning", data.Message, false);
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        alertInfo("error", "Error detected", false);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

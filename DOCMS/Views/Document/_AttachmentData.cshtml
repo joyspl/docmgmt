@@ -1,0 +1,77 @@
+﻿@using DataLayer
+@using System.Configuration
+@model Tuple<AttachmentFile, int>
+@{
+    Document obj = new Document();
+    AttachInfoMap objam = new AttachInfoMap();
+    string Info1 = ConfigurationManager.AppSettings["Info1DefaultText"];
+    string Info2 = ConfigurationManager.AppSettings["Info2DefaultText"];
+    string Info3 = ConfigurationManager.AppSettings["Info3DefaultText"];
+    try
+    {
+        obj = DBOperations<Document>.GetSpecific(new Document() { DocID = Model.Item1.DocID, Opmode = 1 }, Constant.usp_DocumentManager);
+        if (obj != null && obj.SubTypeID > default(long))
+        {
+            objam = DBOperations<AttachInfoMap>.GetSpecific(new AttachInfoMap() { SubTypeID = obj.SubTypeID, Opmode = default(int) }, Constant.usp_AttachmentNameMap);
+        }
+        if (objam != null && objam.ID > default(long))
+        {
+            Info1 = objam.AttachInfo1Name;
+            Info2 = objam.AttachInfo2Name;
+            Info3 = objam.AttachInfo3Name;
+        }
+    }
+    catch { }
+}
+
+<section class="forms">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="form-horizontal">
+                    <div class="form-group row">
+                        <label class="col-sm-4 form-control-label">File Name</label>
+                        <label class="col-sm-8 form-control-label text-primary" id="lblFileName" style="word-wrap: break-word;">@Model.Item1.FileName</label>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 form-control-label">Type</label>
+                        <label class="col-sm-8 form-control-label text-primary" id="lblFileType" style="word-wrap: break-word;">@Utility.GetMimeType(Model.Item1.FileExtenssion)</label>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 form-control-label">Size</label>
+                        <label class="col-sm-8 form-control-label text-primary" id="lblFileSize" style="word-wrap: break-word;">@Utility.SizeSuffix(Convert.ToInt64(Model.Item1.FileSizeBytes))</label>
+                    </div>
+                    <div class=" line"></div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 form-control-label">@(Info1)</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="txtAttachInfo1" style="text-transform: uppercase;">@Model.Item1.AttachInfo1</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 form-control-label">@(Info2)</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="txtAttachInfo2" style="text-transform: uppercase;">@Model.Item1.AttachInfo2</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4 form-control-label">@(Info3)</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="txtAttachInfo3" style="text-transform: uppercase;">@Model.Item1.AttachInfo3</textarea>
+                        </div>
+                    </div>
+                    <div class=" line"></div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 offset-sm-7">
+                            <button id="btnBack" class="btn btn-secondary">Back</button>
+                            @if (Model.Item2 > default(int))
+                            {
+                                <button id="btnSaveAttachmentData" class="btn btn-primary">Save</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

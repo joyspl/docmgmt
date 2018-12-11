@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Document>
+
+@if (Model != null && Model.Count() > default(int))
+{
+    foreach (var item in Model)
+    {
+        <tr class="trdta">
+            <td>
+                <a title="Edit" target="_blank" href="@(Url.Action("New", "Document", new { area = "" }))?id=@(Encryption64.EncryptQueryString(Convert.ToString(item.DocID)))"><i class="fa fa-pencil-square-o"></i></a>&nbsp;
+                @*<a title="Delete" class="adocdel" data-docid="@(Encryption64.EncryptQueryString(Convert.ToString(item.DocID)))" href="javascript:void(0);"><i class="fa fa-trash-o"></i></a>*@
+            </td>
+            <td>
+                <div class="i-checks">
+                    @if (GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin)
+                    {
+                        <input type="checkbox" value="" data-docid="@(Encryption64.EncryptQueryString(item.DocID.ToString()))" class="checkbox-template chkIsApproved" @(item.IsUploadApproved > default(int) ? "checked" : "") />
+                    }
+                    else
+                    {
+                        <input type="checkbox" value="" class="checkbox-template chkIsApproved" @(item.IsUploadApproved > default(int) ? "checked" : "") disabled />
+                    }
+                </div>
+            </td>
+            <td title="@item.DocNumber">@Utility.Truncate(item.DocNumber)</td>
+            <td>@item.DocDate.ToString("dd/MM/yyyy")</td>
+            <td>@item.FinYear</td>
+            <td>@item.DeptName</td>
+            <td>@item.ProjectName</td>
+            <td>@item.SubTypeName</td>
+            <td>@(item.TotalAttachment > default(long) ? @Html.Raw(string.Format("<a title=\"View Attachment(s)\" href=\"javascript:void(0);\">{0}&nbsp;<i class=\"fa fa-paperclip\"></i></a>", item.TotalAttachment.ToString())) : @Html.Raw(default(long).ToString()))</td>
+            <td title="@item.CreatedByFullName">@Utility.Truncate(item.CreatedByFullName)</td>
+            <td>@item.CreatedOn.ToString("dd/MM/yyyy hh:mm tt")</td>
+        </tr>
+    }
+}
+else
+{
+    <tr id="nodataHeading" class="text-center bg-blue-grey">
+        <td colspan="11">
+            <label class="text-center">No item(s) found</label>
+        </td>
+    </tr>
+}

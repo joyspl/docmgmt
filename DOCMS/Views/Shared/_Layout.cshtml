@@ -1,0 +1,127 @@
+﻿@using DataLayer;
+@using Newtonsoft.Json;
+@using System.Configuration;
+@{
+    Organization orgObj = new Organization();
+    string orgName = string.Empty;
+    try
+    {
+        orgObj = DBOperations<Organization>.GetSpecific(new Organization() { Opmode = 1, OrgID = GlobalSettings.oUserPermission.FirstOrDefault().OrgID }, Constant.usp_Organization);
+        orgName = orgObj.OrganizationName;
+    }
+    catch { }
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>@(ViewBag.Title) | @(ConfigurationManager.AppSettings["titlebarName"])</title>
+
+    <link rel="stylesheet" href="@Url.DatedContent("~/css/bootstrap.min.css")" />
+    <link href="@Url.DatedContent("~/css/loader.css")" rel="stylesheet" />
+    <link href="@Url.DatedContent("~/css/noty.css")" rel="stylesheet" />
+    @*<link href="@(Url.DatedContent("~/css/gapi.css"))" rel="stylesheet" />*@
+    <link href="@Url.DatedContent("~/css/select2.min.css")" rel="stylesheet" />
+    <link rel="stylesheet" href="@Url.DatedContent("~/css/style.default.css")" id="theme-stylesheet" />
+    <link rel="stylesheet" href="@Url.DatedContent("~/css/custom.css")" />
+    <link href="@Url.DatedContent("~/css/stickeynote.css")" rel="stylesheet" />
+    <link rel="shortcut icon" href="@Url.DatedContent("~/img/favicon.ico")" />
+    <link href="@(Url.DatedContent("~/css/font-awesome.min.css"))" rel="stylesheet" />
+    @*<link href="@Url.DatedContent("~/css/icons.css")" rel="stylesheet" />*@
+
+    @RenderSection("csslib", required: false)
+
+    <!-- Tweaks for older IEs-->
+    <!--[if lt IE 9]>
+        <script src="@(Url.DatedContent("~/js/html5shiv.min.js"))"></script>
+        <script src="@(Url.DatedContent("~/js/respond.min.js"))"></script><![endif]-->
+</head>
+<body>
+    <div class="page home-page">
+        <header class="header">
+            <nav class="navbar">
+                <div class="container-fluid">
+                    <div class="navbar-holder d-flex align-items-center justify-content-between">
+                        <div class="navbar-header">
+                            <a href="@(Url.Action("Index", "Dashboard", new { area = "" }))" class="navbar-brand">
+                                <div class="brand-text brand-big hidden-lg-down"><span>@(ConfigurationManager.AppSettings["appName"])</span></div>
+                                <div class="brand-text brand-small"><strong>DM</strong></div>
+                            </a>
+                            <a id="toggle-btn" href="#" class="menu-btn active"><span></span><span></span><span></span></a>
+                        </div>
+                        <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
+                            <li class="nav-item"><a href="@(Url.Action("Logout", "Login", new { area = "" }))" class="nav-link logout">Logout<i class="fa fa-sign-out"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="page-content d-flex align-items-stretch">
+            @{ Html.RenderPartial("~/Views/Shared/_Menu.cshtml"); }
+            <div class="content-inner">
+                <header class="page-header">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <h2 class="no-margin-bottom">@(ViewBag.Title)</h2>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="pull-right">@orgName</div>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                @RenderBody()
+
+                <footer class="main-footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p>&copy; @(ConfigurationManager.AppSettings["copyRight"])</p>
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <p>Design &amp; maintained by Team SPL</p>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script src="@Url.DatedContent("~/js/jquery.min.js")"></script>
+    <script src="@Url.DatedContent("~/js/tether.min.js")"></script>
+    <script src="@Url.DatedContent("~/js/bootstrap.min.js")"></script>
+    <script src="@Url.DatedContent("~/js/jquery.cookie.js")"> </script>
+    <script src="@Url.DatedContent("~/js/jquery.validate.min.js")"></script>
+    <script src="@Url.DatedContent("~/js/jquery.blockUI.js")"></script>
+    <script src="@Url.DatedContent("~/js/select2.min.js")"></script>
+    <script src="@Url.DatedContent("~/js/front.js")"></script>
+    <script src="@Url.DatedContent("~/js/noty.js")"></script>
+    <script src="@Url.DatedContent("~/js/common.js")"></script>
+    <script src="@Url.DatedContent("~/js/stickeynote.js")"></script>
+    @*<script src="@Url.Content("~/js/jquery.signalR-2.2.2.min.js")"></script>
+        <script src="@Url.Content("~/signalr/hubs")"></script>*@
+    @RenderSection("scripts", required: false)
+
+    <script>
+        function TrySetCurrentActiveMenu() {
+            try {
+                var url = window.location;
+                if (window.location.pathname.substr(window.location.pathname.lastIndexOf("/") + 1).length <= 0) {
+                    $('#liHome').addClass('active');
+                }
+
+                $('ul.list-unstyled').find('li a[href="' + url + '"]').parent().addClass('active');
+
+                $('ul.list-unstyled').find('li a').filter(function () {
+                    return this.href == url;
+                }).parent('li').addClass('active').parent('ul').parent('li').addClass('active').parent('ul').parent('li').addClass('active');
+            } catch (ex) { }
+        }
+    </script>
+</body>
+</html>

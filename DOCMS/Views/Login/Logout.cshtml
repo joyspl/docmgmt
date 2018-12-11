@@ -1,0 +1,49 @@
+﻿@using System.Configuration;
+@{
+    Layout = null;
+    ViewBag.Title = "Logout";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>@ViewBag.Title | @(ConfigurationManager.AppSettings["titlebarName"])</title>
+    <link rel="stylesheet" href="@(Url.DatedContent("~/css/bootstrap.min.css"))" />
+    <link href="@(Url.DatedContent("~/css/loader.css"))" rel="stylesheet" />
+    <link href="@(Url.DatedContent("~/css/noty.css"))" rel="stylesheet" />
+    <link href="@(Url.DatedContent("~/css/gapi.css"))" rel="stylesheet" />
+    <link rel="stylesheet" href="@(Url.DatedContent("~/css/style.default.css"))" id="theme-stylesheet" />
+    <link rel="stylesheet" href="@(Url.DatedContent("~/css/custom.css"))" />
+    <link rel="shortcut icon" href="@(Url.DatedContent("~/img/favicon.ico"))" />
+    <link href="@(Url.DatedContent("~/css/font-awesome.min.css"))" rel="stylesheet" />
+    <link href="@(Url.DatedContent("~/css/icons.css"))" rel="stylesheet" />
+    <!-- Tweaks for older IEs-->
+    <!--[if lt IE 9]>
+        <script src="@(Url.DatedContent("~/js/html5shiv.min.js"))"></script>
+        <script src="@(Url.DatedContent("~/js/respond.min.js"))"></script><![endif]-->
+</head>
+<body>
+    <div class="row-fluid">
+        <div class="col-md-12 text-center" style="padding-top: 5%;">
+            <div class="error-code"><i class="fa fa-trash" style="font-size: 130px;"></i></div>
+            <div class="error-message">Successfully signed out from the current session.</div>
+            <div class="button-place">
+                <a href="@(Url.Action("Index", "Login", new { area = "" }))" class="btn btn-lg btn-secondary"><i class="fa fa-lock"></i>&nbsp;LOGIN&nbsp;AGAIN</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="@(Url.DatedContent("~/js/jquery.min.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/tether.min.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/bootstrap.min.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/jquery.cookie.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/jquery.validate.min.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/front.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/noty.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/common.js"))"></script>
+    <script src="@(Url.DatedContent("~/js/jquery.blockUI.js"))"></script>
+</body>
+</html>
