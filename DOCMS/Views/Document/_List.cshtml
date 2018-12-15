@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<Document>
-
 @if (Model != null && Model.Count() > default(int))
 {
     foreach (var item in Model)
@@ -13,7 +12,21 @@
                 <div class="i-checks">
                     @if (GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin || GlobalSettings.oUserData.RoleID == (long)Role.Admin)
                     {
-                        <input type="checkbox" value="" data-docid="@(Encryption64.EncryptQueryString(item.DocID.ToString()))" class="checkbox-template chkIsApproved" @(item.IsUploadApproved > default(int) ? "checked" : "") />
+                        if (GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin)
+                        {
+                            <input type="checkbox" value="" data-docid="@(Encryption64.EncryptQueryString(item.DocID.ToString()))" class="checkbox-template chkIsApproved" @(item.IsUploadApproved > default(int) ? "checked" : "") />
+                        }
+                        else if (GlobalSettings.oUserData.RoleID == (long)Role.Admin)
+                        {
+                            if (item.IsUploadApproved > default(int))
+                            {
+                                <input type="checkbox" value="" class="checkbox-template chkIsApproved" checked disabled />
+                            }
+                            else
+                            {
+                                <input type="checkbox" value="" data-docid="@(Encryption64.EncryptQueryString(item.DocID.ToString()))" class="checkbox-template chkIsApproved" />
+                            }
+                        }
                     }
                     else
                     {

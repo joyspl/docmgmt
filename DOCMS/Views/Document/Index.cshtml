@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Document Manager";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int isnormaladmin = GlobalSettings.oUserData.RoleID == (long)Role.Admin ? 1 : default(int);
 }
 
 @section csslib {
@@ -91,6 +92,7 @@
     <script src="@Url.DatedContent("~/js/bootstrap-datetimepicker.min.js")"></script>
     <script>
         var isSysadmin = @(GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin ? 1 : 0);
+        var isadmin = @(isnormaladmin);
         @*var jsModel = "@Html.Raw(HttpUtility.JavaScriptStringEncode(@Newtonsoft.Json.JsonConvert.SerializeObject(GlobalSettings.oUserPermission, new Newtonsoft.Json.Converters.IsoDateTimeConverter() { DateTimeFormat = "dd/MM/yyyy HH:mm:ss" })))";*@
 
         var _grpPageNumber = 1;
@@ -215,15 +217,18 @@
 
         $(document).off("click", ".chkIsApproved").on("click", ".chkIsApproved", function (e) {
             var $this = $(this);
-            if (isSysadmin > 0) {
+            if (isSysadmin > 0 || isadmin > 0) {
                 var docid = $(this).attr("data-docid");
-                var isapproved = $(this).is(":checked") ? 1 : 0;
+                var isapproved = isadmin > 0 ? 1 : ($(this).is(":checked") ? 1 : 0);
                 $.ajax({
                     url: "@Url.Action("SetApproval", "Document", new { area = "" })?key=" + docid + "&key1=" + isapproved,
                     type: "GET"
                 }).done(function (data) {
                     if (data.Success > 0) {
                         alertInfo("success", data.Message, false);
+                        if (isadmin > 0) {
+                            $($this).prop("disabled", true);
+                        }
                     } else {
                         alertInfo("error", data.Message, false);
                         if ($($this).is(":checked")) {
