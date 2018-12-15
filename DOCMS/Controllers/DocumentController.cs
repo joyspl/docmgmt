@@ -424,8 +424,8 @@ namespace DOCMS.Controllers
                 if (System.IO.File.Exists(string.Format(@"{0}\{1}\{2}{3}", ConfigurationManager.AppSettings["DocumentDomainRootDirectory"], docid, obj.FileName, obj.FileExtenssion)))
                 {
                     System.IO.File.Delete(string.Format(@"{0}\{1}\{2}{3}", ConfigurationManager.AppSettings["DocumentDomainRootDirectory"], docid, obj.FileName, obj.FileExtenssion));
-                    delresult = DBOperations<AttachmentFile>.DMLOperation(new AttachmentFile() { DocID = docid, AttachmentID = attachid, Opmode = 5 }, Constant.usp_Attachment, DMLOperationFlag.Delete);
                 }
+                delresult = DBOperations<AttachmentFile>.DMLOperation(new AttachmentFile() { DocID = docid, AttachmentID = attachid, Opmode = 5 }, Constant.usp_Attachment, DMLOperationFlag.Delete);
                 if (delresult > default(int))
                     return Json(new { Success = 1, Message = string.Format("Attachement file ({0}{1}) has been deleted successfully", obj.FileName, obj.FileExtenssion) }, JsonRequestBehavior.AllowGet);
                 else

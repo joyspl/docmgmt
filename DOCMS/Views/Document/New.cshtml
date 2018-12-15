@@ -197,12 +197,14 @@
                     }
 
                     if (files.length > 0) {
+                        debugger;
                         alertInfo("success", files.join(), false);
 
-                        var onlyfile= files.join().split('.').slice(0, -1).join('.');
+                        var onlyfile = files.join().split('.').slice(0, -1).join('.');
 
-
-                        $("#txtDocNo").val(onlyfile); // new adition on 23-11-18
+                        if ($("#txtDocNo").val().trim() == "") {
+                            $("#txtDocNo").val(files[0]); // new adition on 23-11-18
+                        }
                         LoadAttachmentList($("#hdnID").val());
 
                         

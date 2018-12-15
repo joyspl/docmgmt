@@ -11,7 +11,7 @@
             </td>
             <td>
                 <div class="i-checks">
-                    @if (GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin)
+                    @if (GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin || GlobalSettings.oUserData.RoleID == (long)Role.Admin)
                     {
                         <input type="checkbox" value="" data-docid="@(Encryption64.EncryptQueryString(item.DocID.ToString()))" class="checkbox-template chkIsApproved" @(item.IsUploadApproved > default(int) ? "checked" : "") />
                     }
