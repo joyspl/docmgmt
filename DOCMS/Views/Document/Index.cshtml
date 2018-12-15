@@ -75,7 +75,7 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-12">
-                                <div class="pull-right">
+                                <div class="pull-right" @(GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin ? Html.Raw("") : Html.Raw("style=\"display: none;"))>
                                     <span class="text-primary" id="spnTotRec"><small>Total Record(s): <strong>@ViewBag.TotalRecords</strong></small></span>
                                 </div>
                             </div>
@@ -201,7 +201,9 @@
 
             $("div.dvTable").unbind("scroll");
             $("div.dvTable").scroll(function () {
+                @*console.log("Scroll fired");*@
                 if (Math.ceil($("div.dvTable").scrollTop()) >= Math.ceil($("table.table-bordered").height() - $("div.dvTable")[0].clientHeight) && GetLoadedCount()) {
+                    @*console.log("Pagination fired");*@
                     GetData(false);
                 }
             });

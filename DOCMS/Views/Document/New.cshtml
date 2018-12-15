@@ -169,7 +169,7 @@
                 enabled: true
             },
             validation: {
-                allowedExtensions: ["jpeg", "jpg", "gif", "png", "tiff", "cal", "pdf", "doc", "docx", ".odt", ".odp", ".ods"],
+                allowedExtensions: isSysadmin ? ["jpeg", "jpg", "gif", "png", "tiff", "cal", "pdf", "doc", "docx", ".odt", ".odp", ".ods", ".xls", ".xlsx", ".zip", ".bak"] : ["jpeg", "jpg", "gif", "png", "tiff", "cal", "pdf", "doc", "docx", ".odt", ".odp", ".ods", ".xls", ".xlsx"],
                 sizeLimit: 209715200 @*200 MB = 200 * 1024 * 1024 bytes*@
             },
             retry: {

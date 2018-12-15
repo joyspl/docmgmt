@@ -193,7 +193,14 @@ namespace DOCMS.Controllers
                 }
                 else if (GlobalSettings.oUserData.RoleID != (long)Role.BuiltinAdmin)
                 {
-                    conditionExpression += string.Format(" AND d.DeptID IN ({0}) ", string.Join(",", deptLst));
+                    if (GlobalSettings.oUserData.DeptID > default(long))
+                    {
+                        conditionExpression += string.Format(" AND d.DeptID = {0} ", GlobalSettings.oUserData.DeptID);
+                    }
+                    else
+                    {
+                        conditionExpression += string.Format(" AND d.DeptID IN ({0}) ", string.Join(",", deptLst));
+                    }
                 }
 
                 if (prjid > default(long))
