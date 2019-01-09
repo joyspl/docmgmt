@@ -50,6 +50,7 @@ namespace DOCMS.Controllers
             }
             catch (Exception ex)
             {
+                Utility.Logger(ex);
                 return Json(new { Success = default(int), Message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }

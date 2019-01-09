@@ -47,6 +47,10 @@
     <Reference Include="itextsharp">
       <HintPath>C:\Users\joy\Desktop\itextsharp.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bdmsv2\CommonDLLs\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -301,6 +305,7 @@
     <None Include="Properties\PublishProfiles\DOC.pubxml" />
     <Content Include="Views\Document\_Search.cshtml" />
     <Content Include="Views\ChangePassword\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\docms.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -310,6 +315,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="LogBackUp\" />
     <Folder Include="Uploads\" />
   </ItemGroup>
   <PropertyGroup>

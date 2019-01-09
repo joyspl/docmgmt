@@ -24,7 +24,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using System.Net.Mime;
 using System.Web.Routing;
-
+using log4net;
 using OfficeOpenXml;
 using OfficeOpenXml.Drawing;
 using OfficeOpenXml.Style;
@@ -88,6 +88,27 @@ public sealed class Utility
 
         return string.Format("{0:n" + decimalPlaces + "} {1}", adjustedSize, SizeSuffixes[mag]);
     }
+
+    public static void Logger(Exception exc)
+    {
+        try
+        {
+            var logger = LogManager.GetLogger("ErrorLog");
+            logger.Error(exc.Message);
+        }
+        catch { }
+    }
+
+    public static void Logger(string errmsg)
+    {
+        try
+        {
+            var logger = LogManager.GetLogger("ErrorLog");
+            logger.Error(errmsg);
+        }
+        catch { }
+    }
+
     public static string Truncate(string value, int maxChars = 20)
     {
         if (!string.IsNullOrEmpty(value))

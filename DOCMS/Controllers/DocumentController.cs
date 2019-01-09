@@ -440,6 +440,7 @@ namespace DOCMS.Controllers
             }
             catch (Exception ex)
             {
+                Utility.Logger(ex);
                 return Json(new { Success = default(int), Message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -469,6 +470,7 @@ namespace DOCMS.Controllers
                         }
                         catch (Exception ex)
                         {
+                            Utility.Logger(ex);
                             sb.AppendLine(ex.Message);
                             continue;
                         }
@@ -487,6 +489,7 @@ namespace DOCMS.Controllers
             }
             catch (Exception ex)
             {
+                Utility.Logger(ex);
                 return Json(new { Success = default(int), Message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -505,6 +508,7 @@ namespace DOCMS.Controllers
             }
             catch (Exception ex)
             {
+                Utility.Logger(ex);
                 return Json(new { Success = default(int), Message = ex.Message });
             }
         }
@@ -531,6 +535,7 @@ namespace DOCMS.Controllers
             }
             catch (Exception ex)
             {
+                Utility.Logger(ex);
                 return Json(new { Success = default(int), Message = ex.Message });
             }
         }
@@ -548,8 +553,9 @@ namespace DOCMS.Controllers
                 Tuple<AttachmentFile, int> tpl = new Tuple<AttachmentFile, int>(obj, iseditrequest);
                 return View("AttachmentViewer", tpl);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Utility.Logger(ex);
                 return null;
             }
         }
@@ -564,10 +570,12 @@ namespace DOCMS.Controllers
                 obj = DBOperations<AttachmentFile>.GetSpecific(new AttachmentFile() { AttachmentID = attachid, Opmode = 1 }, Constant.usp_Attachment);
                 //var stream = new FileStream(Server.MapPath(obj.FilePath), FileMode.Open);
                 var stream = new FileStream(obj.FilePath, FileMode.Open);
+                //Utility.Logger(attachid.ToString());
                 return File(stream, MediaTypeNames.Application.Octet, string.Format("{0}{1}", obj.FileName, obj.FileExtenssion));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Utility.Logger(ex);
                 return null;
             }
         }
@@ -682,7 +690,10 @@ namespace DOCMS.Controllers
                     Info3 = objam.AttachInfo3Name;
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Utility.Logger(ex);
+            }
             return Json(new { Info1 = string.Format("{0} (Optional)", Info1), Info2 = string.Format("{0} (Optional)", Info2), Info3 = string.Format("{0} (Optional)", Info3), }, JsonRequestBehavior.AllowGet);
         }
 
