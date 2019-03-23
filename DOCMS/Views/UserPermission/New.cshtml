@@ -1,0 +1,436 @@
+﻿@using Newtonsoft.Json;
+@using System.Configuration;
+@model UserPermissionMaster
+@{
+    ViewBag.Title = "User Permission Add/Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section csslib {
+    <link href="@(Url.Content("~/css/jquery-customselect.css"))" rel="stylesheet" />
+}
+
+<input type="hidden" id="hdnID" value="@Encryption64.EncryptQueryString(Model.AccessID.ToString())" />
+<section class="forms">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-close">
+                    </div>
+                    <div class="card-header d-flex align-items-center">
+                        <h3 class="h4">@ViewBag.Title</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-horizontal">
+                            <div class="form-group row">
+                                <label class="col-sm-6 ">User List*</label>
+                                <div class="col-sm-6">
+                                    <select id="ddlUser" class="form-control custom-select"></select>
+                                </div>
+                            </div>
+                           
+                            <div class="form-group row">
+                                <label class="col-sm-6 ">Organisation*</label>
+                                <div class="col-sm-6">
+                                    <select id="ddlOrg" class="form-control custom-select"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-6 ">Location*</label>
+                                <div class="col-sm-6">
+                                    <select id="ddLocation" class="form-control custom-select"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-6 ">Sub Location*</label>
+                                <div class="col-sm-6">
+                                    <select id="ddlSubLocation" class="form-control custom-select"></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-6 ">Department*</label>
+                                <div class="col-sm-6">
+                                    <select id="ddlDept" class="form-control custom-select"></select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 ">Project*</label>
+                                <div class="col-sm-6">
+                                    <select id="ddlProject" class="form-control custom-select"></select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 ">Sub Type*</label>
+                                <div class="col-sm-6">
+                                    <select id="ddlSubType" class="form-control custom-select"></select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-6 ">Full Permission*</label>
+                                <div class="col-sm-6">
+                                    <select id="ddlFullPermission" class="form-control custom-select">
+                                        <option value="1">View</option>
+                                        <option value="0">Upload</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="line"></div>
+                            <div class="form-group row">
+                                <div class="col-sm-4 offset-sm-3">
+                                    @if (GlobalSettings.oUserData.RoleID == (long)Role.BuiltinAdmin || GlobalSettings.oUserData.RoleID == (long)Role.Admin)
+                                    {
+                                        <button id="btnSave" class="btn btn-primary">Save</button>
+                                    }
+                                    <button id="btnCancel" class="btn btn-secondary">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts {
+    <script src="@Url.Content("~/js/jquery-customselect.min.js")"></script>
+    <script>
+    $(function () {
+
+        loadAllUser();
+        loadAllOrg();
+        loadLocation();
+        loadSubLocation();
+        loadDepartment();
+        loadProject();
+        loadSubType();
+    });
+
+    $(document).off("click", "#btnCancel").on("click", "#btnCancel", function (e) {
+        window.location.href = "@Url.Action("Index", "UserPermission", new { area = "" })";
+    });
+
+    $(document).off("click", "#btnSave").on("click", "#btnSave", function (e) {
+        if ($("#ddlUser").val() == "" || $("#ddlOrg").val() == "" || $("#ddLocation").val() == "" || $("#ddlSubLocation").val() == "" || $("#ddlDept").val() == ""
+            || $("#ddlProject").val() == "" || $("#ddlSubType").val() == "" || $("#ddlFullPermission").val() == "") {
+            alertInfo("error", "Please complete all * marked fields", false);
+        } else {
+            var postData = new Object();
+            
+          
+            postData.EncryptedAccessID = $("#hdnID").val();
+            postData.UserID = $("#ddlUser").val()*1;
+            postData.OrgID = $("#ddlOrg").val() * 1;
+            postData.LocationID = $("#ddLocation").val()*1;
+            postData.SublocationID = $("#ddlSubLocation").val()*1;
+            postData.DeptID = $("#ddlDept").val()*1;
+            postData.ProjectID = $("#ddlProject").val()*1;
+            postData.SubTypeID = $("#ddlSubType").val() * 1;
+            postData.HasFullPermission = $("#ddlFullPermission").val() * 1;
+
+            $.ajax({
+                url: "@Url.Action("SaveData", "UserPermission", new { area = "" })",
+                type: "POST",
+                data: JSON.stringify(postData),
+                contentType: "application/json; charset=utf-8"
+            }).done(function (data) {
+                if (data.Success > 0) {
+                    alert(data.Message);
+                    //alertInfo("success", data.Message, false);
+                    window.location.href = "@Url.Action("Index", "UserPermission", new { area = "" })";
+                } else {
+                    alertInfo("error", data.Message, false);
+                }
+            });
+        }
+    });
+
+
+    function loadAllUser()
+    {
+        $.ajax({
+            url: "@Url.Action("GetAllUser", "UserPermission", new { area = "" })",
+                type: "GET"
+
+        }).done(function (data) {
+            try {
+                if (data.Success > 0) {
+                    var jsonData = data.Message;
+                    if (jsonData.length > 0) {
+
+                        $("#ddlUser").html('');
+
+                        var $select = $("#ddlUser");
+
+                        $select.append('<option value="">-- Select User --</option>');
+
+                        for (var i = 0; i < jsonData.length; i++) {
+                            var obj = jsonData[i];
+                            $select.append($("<option />", { value: obj.ID, text: obj.UserEmail }));
+                        }
+                    }
+
+                }
+            } catch (ex) { }
+        }).always(function (data) {
+            $("#ddlUser").select2({
+                placeholder: "Select User",
+                theme: "classic"
+            });
+            $("#ddlUser").change();
+            loadAllOrg();
+
+        });
+        }
+
+        function loadAllOrg()
+        {
+            $.ajax({
+                url: "@Url.Action("GetAllOrg", "UserPermission", new { area = "" })",
+                type: "GET"
+
+        }).done(function (data) {
+            try {
+                if (data.Success > 0) {
+                    var jsonData = data.Message;
+                    if (jsonData.length > 0) {
+
+                        $("#ddlOrg").html('');
+
+                        var $select = $("#ddlOrg");
+
+                        $select.append('<option value="">-- Select Organisation --</option>');
+
+                        for (var i = 0; i < jsonData.length; i++) {
+                            var obj = jsonData[i];
+                            $select.append($("<option />", { value: obj.OrgID, text: obj.OrgShortName }));
+                        }
+                    }
+
+                }
+            } catch (ex) { }
+        }).always(function (data) {
+            $("#ddlOrg").select2({
+                placeholder: "Select Organisation",
+                theme: "classic"
+            });
+         //   $("#ddlOrg").change();
+            
+        });
+        }
+        $(document).off("change", "#ddlOrg").on("change", "#ddlOrg", function (e) {
+
+            loadLocation(this.value);
+        });
+        
+        function loadLocation(orgId)
+        {
+            $("#ddLocation").html('');
+            $("#ddlSubLocation").html('');
+
+                $.ajax({
+                    url: "@Url.Action("GetLocationOrg", "UserPermission", new { area = "" })",
+                    type: "GET",
+                    data: { orgid: orgId }
+
+            }).done(function (data) {
+                try {
+                    if (data.Success > 0) {
+                        var jsonData = data.Message;
+                        if (jsonData.length > 0) {
+
+                            $("#ddLocation").html('');
+
+                            var $select = $("#ddLocation");
+
+                            $select.append('<option value="">-- Select Location --</option>');
+
+                            for (var i = 0; i < jsonData.length; i++) {
+                                var obj = jsonData[i];
+                                $select.append($("<option />", { value: obj.LocationID, text: obj.LocationName }));
+                            }
+                        }
+
+                    }
+                } catch (ex) { }
+            }).always(function (data) {
+                $("#ddLocation").select2({
+                    placeholder: "Select Location",
+                    theme: "classic"
+                });
+               // $("#ddLocation").change();
+            
+            });
+        }
+        $(document).off("change", "#ddLocation").on("change", "#ddLocation", function (e) {
+
+            loadSubLocation(this.value);
+        });
+        function loadSubLocation(LocationId)
+        {
+                $.ajax({
+                    url: "@Url.Action("GetSubLocation", "UserPermission", new { area = "" })",
+                    type: "GET",
+                    data: { locationid: LocationId }
+
+            }).done(function (data) {
+                try {
+                    if (data.Success > 0) {
+                        var jsonData = data.Message;
+                        if (jsonData.length > 0) {
+
+                            $("#ddlSubLocation").html('');
+
+                            var $select = $("#ddlSubLocation");
+
+                            $select.append('<option value="">-- Select Sub Location --</option>');
+
+                            for (var i = 0; i < jsonData.length; i++) {
+                                var obj = jsonData[i];
+                                $select.append($("<option />", { value: obj.SubLocationID, text: obj.SubLocationName }));
+                            }
+                        }
+
+                    }
+                } catch (ex) { }
+            }).always(function (data) {
+                $("#ddlSubLocation").select2({
+                    placeholder: "Select Sub Location",
+                    theme: "classic"
+                });
+              //  $("#ddlSubLocation").change();
+            
+            });
+
+        }
+        $(document).off("change", "#ddlSubLocation").on("change", "#ddlSubLocation", function (e) {
+
+            loadDepartment(this.value);
+        });
+        function loadDepartment(sublocId)
+        {
+            $("#ddlDept").html('');
+                    $.ajax({
+                        url: "@Url.Action("GetDepartment", "UserPermission", new { area = "" })",
+                        type: "GET",
+                        data: { sublocid: sublocId }
+
+                }).done(function (data) {
+                    try {
+                        if (data.Success > 0) {
+                            var jsonData = data.Message;
+                            if (jsonData.length > 0) {
+
+                                $("#ddlDept").html('');
+
+                                var $select = $("#ddlDept");
+
+                                $select.append('<option value="">-- Select Department --</option>');
+
+                                for (var i = 0; i < jsonData.length; i++) {
+                                    var obj = jsonData[i];
+                                    $select.append($("<option />", { value: obj.DeptID, text: obj.DeptName }));
+                                }
+                            }
+
+                        }
+                    } catch (ex) { }
+                }).always(function (data) {
+                    $("#ddlDept").select2({
+                        placeholder: "Select Department",
+                        theme: "classic"
+                    });
+                   // $("#ddlDept").change();
+            
+                });
+        }
+        $(document).off("change", "#ddlDept").on("change", "#ddlDept", function (e) {
+
+            loadProject(this.value);
+        });
+        function loadProject(deptId)
+        {
+            $("#ddlProject").html('');
+                $.ajax({
+                    url: "@Url.Action("GetProject", "UserPermission", new { area = "" })",
+                    type: "GET",
+                    data: { deptid: deptId }
+
+            }).done(function (data) {
+                try {
+                    if (data.Success > 0) {
+                        var jsonData = data.Message;
+                        if (jsonData.length > 0) {
+
+                            $("#ddlProject").html('');
+
+                            var $select = $("#ddlProject");
+
+                            $select.append('<option value="">-- Select Project --</option>');
+
+                            for (var i = 0; i < jsonData.length; i++) {
+                                var obj = jsonData[i];
+                                $select.append($("<option />", { value: obj.ProjectID, text: obj.ProjectName }));
+                            }
+                        }
+
+                    }
+                } catch (ex) { }
+            }).always(function (data) {
+                $("#ddlProject").select2({
+                    placeholder: "Select Project",
+                    theme: "classic"
+                });
+               // $("#ddlProject").change();
+            
+            });
+        }
+        $(document).off("change", "#ddlProject").on("change", "#ddlProject", function (e) {
+
+            loadSubType(this.value);
+        });
+
+        function loadSubType(projectId)
+        {
+                $("#ddlSubType").html('');
+                $.ajax({
+                    url: "@Url.Action("GetSubType", "UserPermission", new { area = "" })",
+                    type: "GET",
+                    data: { projectid: projectId }
+
+            }).done(function (data) {
+                try {
+                    if (data.Success > 0) {
+                        var jsonData = data.Message;
+                        if (jsonData.length > 0) {
+
+                            $("#ddlSubType").html('');
+
+                            var $select = $("#ddlSubType");
+
+                            $select.append('<option value="">-- Select Sub Type --</option>');
+
+                            for (var i = 0; i < jsonData.length; i++) {
+                                var obj = jsonData[i];
+                                $select.append($("<option />", { value: obj.SubTypeID, text: obj.SubTypeName }));
+                            }
+                        }
+
+                    }
+                } catch (ex) { }
+            }).always(function (data) {
+                $("#ddlSubType").select2({
+                    placeholder: "Select Sub Type",
+                    theme: "classic"
+                });
+                // $("#ddlProject").change();
+            
+            });
+        }
+    </script>
+}
