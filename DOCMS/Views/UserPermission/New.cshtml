@@ -11,6 +11,18 @@
 }
 
 <input type="hidden" id="hdnID" value="@Encryption64.EncryptQueryString(Model.AccessID.ToString())" />
+
+<input type="hidden" value="@Model.AccessID" id="hdnAccessID" />
+<input type="hidden" value="@Model.UserID" id="hdnUserID" />
+<input type="hidden" value="@Model.OrgID" id="hdnOrgID" />
+<input type="hidden" value="@Model.LocationID" id="hdnLocationID" />
+<input type="hidden" value="@Model.SublocationID" id="hdnSublocationID" />
+<input type="hidden" value="@Model.DeptID" id="hdnDeptID" />
+<input type="hidden" value="@Model.ProjectID" id="hdnProjectID" />
+<input type="hidden" value="@Model.SubTypeID" id="hdnSubTypeID" />
+<input type="hidden" value="@Model.HasFullPermission" id="hdnHasFullPermission" />
+
+
 <section class="forms">
     <div class="container-fluid">
         <div class="row">
@@ -73,8 +85,8 @@
                                 <label class="col-sm-6 ">Full Permission*</label>
                                 <div class="col-sm-6">
                                     <select id="ddlFullPermission" class="form-control custom-select">
-                                        <option value="1">View</option>
-                                        <option value="0">Upload</option>
+                                        <option value="0">View</option>
+                                        <option value="1">Upload</option>
                                     </select>
                                 </div>
                             </div>
@@ -102,6 +114,7 @@
     <script>
     $(function () {
 
+       
         loadAllUser();
         loadAllOrg();
         loadLocation();
@@ -109,6 +122,11 @@
         loadDepartment();
         loadProject();
         loadSubType();
+        if (($("#hdnAccessID").val() * 1) > 0) { // edit purpose
+
+            $("#ddlFullPermission").val($("#hdnHasFullPermission").val());
+            $("#ddlFullPermission").change();
+        }
     });
 
     $(document).off("click", "#btnCancel").on("click", "#btnCancel", function (e) {
@@ -183,6 +201,14 @@
                 theme: "classic"
             });
             $("#ddlUser").change();
+
+            
+
+            if (($("#hdnAccessID").val() * 1) > 0) { // edit purpose
+
+                $("#ddlUser").val($("#hdnUserID").val());
+                $("#ddlUser").change();
+            }
             loadAllOrg();
 
         });
@@ -219,7 +245,11 @@
                 placeholder: "Select Organisation",
                 theme: "classic"
             });
-         //   $("#ddlOrg").change();
+            if (($("#hdnAccessID").val() * 1) > 0) { // edit purpose
+
+                $("#ddlOrg").val($("#hdnOrgID").val());
+                $("#ddlOrg").change();
+            }
             
         });
         }
@@ -263,7 +293,11 @@
                     placeholder: "Select Location",
                     theme: "classic"
                 });
-               // $("#ddLocation").change();
+                if (($("#hdnAccessID").val() * 1) > 0) { // edit purpose
+
+                    $("#ddLocation").val($("#hdnLocationID").val());
+                    $("#ddLocation").change();
+                }
             
             });
         }
@@ -303,7 +337,11 @@
                     placeholder: "Select Sub Location",
                     theme: "classic"
                 });
-              //  $("#ddlSubLocation").change();
+                if (($("#hdnAccessID").val() * 1) > 0) { // edit purpose
+
+                    $("#ddlSubLocation").val($("#hdnSublocationID").val());
+                    $("#ddlSubLocation").change();
+                }
             
             });
 
@@ -345,7 +383,11 @@
                         placeholder: "Select Department",
                         theme: "classic"
                     });
-                   // $("#ddlDept").change();
+                    if (($("#hdnAccessID").val() * 1) > 0) { // edit purpose
+
+                        $("#ddlDept").val($("#hdnDeptID").val());
+                        $("#ddlDept").change();
+                    }
             
                 });
         }
@@ -386,7 +428,11 @@
                     placeholder: "Select Project",
                     theme: "classic"
                 });
-               // $("#ddlProject").change();
+                if (($("#hdnAccessID").val() * 1) > 0) { // edit purpose
+
+                    $("#ddlProject").val($("#hdnProjectID").val());
+                    $("#ddlProject").change();
+                }
             
             });
         }
@@ -428,7 +474,11 @@
                     placeholder: "Select Sub Type",
                     theme: "classic"
                 });
-                // $("#ddlProject").change();
+                if (($("#hdnAccessID").val() * 1) > 0) { // edit purpose
+
+                    $("#ddlSubType").val($("#hdnSubTypeID").val());
+                    $("#ddlSubType").change();
+                }
             
             });
         }

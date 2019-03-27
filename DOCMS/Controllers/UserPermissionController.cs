@@ -35,7 +35,7 @@ namespace DOCMS.Controllers
 
                 if (permissionid > default(long))
                 {
-                   // obj = DBOperations<Organization>.GetSpecific(new Organization() { OrgID = orgid, Opmode = 1 }, Constant.usp_Organization);
+                    obj = DBOperations<UserPermissionMaster>.GetSpecific(new UserPermissionMaster() { AccessID = permissionid, Opmode = 4 }, Constant.usp_UserPermissionMaster);
                 }
             }
             catch (Exception)
@@ -260,7 +260,7 @@ namespace DOCMS.Controllers
 
                 long.TryParse(Encryption64.DecryptQueryString(postData.EncryptedAccessID), out accessid);
                 postData.AccessID = accessid;
-                postData.Opmode = accessid > default(int) ? 1 : 0;
+                postData.Opmode = accessid > default(int) ? 5 : 0;
 
                 UserPermissionMaster obj = new UserPermissionMaster();
                 obj.UserID = postData.UserID;
@@ -270,26 +270,59 @@ namespace DOCMS.Controllers
                 obj.DeptID = postData.DeptID;
                 obj.ProjectID = postData.ProjectID;
                 obj.SubTypeID = postData.SubTypeID;
-                obj.Opmode = 1;
+                obj.AccessID = accessid;
+                
+                if (postData.Opmode==0) //add
+                {
+                    obj.Opmode = 1;
+                }
+                else
+                {
+                    obj.Opmode = 6; // edit
+                }
 
               //  var countid = default(long);
-                var objcount = new UserPermissionMaster();
-
-                 objcount = DBOperations<UserPermissionMaster>.GetSpecific(obj, Constant.usp_UserPermissionMaster);
-
-                 if (objcount.AccessID> default(long))
+                if(postData.Opmode==0) // add
                 {
-                    throw new Exception("Permission already exist");
-                }
-                 else
-                 {
-                     var result = DBOperations<UserPermissionMaster>.DMLOperation(postData, Constant.usp_UserPermissionMaster);
+                    var objcount = new UserPermissionMaster();
 
-                     if (result > default(int))
-                         return Json(new { Success = 1, Message = string.Format("Data have been {0} successfully", accessid > default(long) ? "updated" : "saved") }, JsonRequestBehavior.AllowGet);
-                     else
-                         throw new Exception("Operation has been failed to execute");
-                 }
+                    objcount = DBOperations<UserPermissionMaster>.GetSpecific(obj, Constant.usp_UserPermissionMaster);
+
+                    if (objcount.AccessID > default(long))
+                    {
+                        throw new Exception("Permission already exist");
+                    }
+                    else
+                    {
+                        var result = DBOperations<UserPermissionMaster>.DMLOperation(postData, Constant.usp_UserPermissionMaster);
+
+                        if (result > default(int))
+                            return Json(new { Success = 1, Message = string.Format("Data have been {0} successfully", accessid > default(long) ? "updated" : "saved") }, JsonRequestBehavior.AllowGet);
+                        else
+                            throw new Exception("Operation has been failed to execute");
+                    }
+                }
+                else // edit
+                {
+                    var objcount = new UserPermissionMaster();
+
+                    objcount = DBOperations<UserPermissionMaster>.GetSpecific(obj, Constant.usp_UserPermissionMaster);
+
+                    if (objcount.AccessID > default(long))
+                    {
+                        throw new Exception("Permission already exist");
+                    }
+                    else
+                    {
+                        var result = DBOperations<UserPermissionMaster>.DMLOperation(postData, Constant.usp_UserPermissionMaster);
+
+                        if (result > default(int))
+                            return Json(new { Success = 1, Message = string.Format("Data have been {0} successfully", accessid > default(long) ? "updated" : "saved") }, JsonRequestBehavior.AllowGet);
+                        else
+                            throw new Exception("Operation has been failed to execute");
+                    }
+                }
+
 
                 
             }

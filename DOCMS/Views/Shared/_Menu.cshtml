@@ -18,6 +18,7 @@
             <li>
                 <a href="#dashvariants" aria-expanded="false" data-toggle="collapse"><i class="fa fa-th-large"></i>Master Data</a>
                 <ul id="dashvariants" class="collapse list-unstyled">
+                    <li><a href="@(Url.Action("Index", "UserPermission", new { area = "" }))">User Permission Manager</a></li>
                     <li><a href="@(Url.Action("Index", "Organization", new { area = "" }))">Organization Manager</a></li>
                     <li><a href="@(Url.Action("Index", "Location", new { area = "" }))">Location Manager</a></li>
                     <li><a href="@(Url.Action("Index", "SubLocation", new { area = "" }))">Sub-Location Manager</a></li>
@@ -28,7 +29,7 @@
             </li>
         }
         
-        <li><a href="@(Url.Action("Index", "UserPermission", new { area = "" }))">User Permission Add</a></li>
+        
         <li><a href="@(Url.Action("Index", "Document", new { area = "" }))"><i class="fa fa-file-text-o"></i>Document Manager</a></li>
     </ul>
 </nav>

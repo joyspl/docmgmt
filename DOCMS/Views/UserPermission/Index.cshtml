@@ -45,7 +45,7 @@
                                             {
                                                 <tr>
                                                     <td>
-                                                        <a title="Edit" href="@(Url.Action("New", "Organization", new { area = "" }))?id=@(Encryption64.EncryptQueryString(Convert.ToString(item.AccessID)))"><i class="fa fa-pencil-square-o"></i></a>
+                                                        <a title="Edit" href="@(Url.Action("New", "UserPermission", new { area = "" }))?id=@(Encryption64.EncryptQueryString(Convert.ToString(item.AccessID)))"><i class="fa fa-pencil-square-o"></i></a>
                                                     </td>
                                                     <td title="@item.UserID">@item.UserEmail</td>
                                                     <td title="@item.UserID">@item.OrganizationName</td>
