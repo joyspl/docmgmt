@@ -18,6 +18,21 @@ public class Document : ModelBase
     public string DocNumber { get; set; }
     public string FileNo { get; set; }
     public int IsUploadApproved { get; set; }
+
+    // added 18.4.19
+    public long ApprovedBy { get; set; }
+    // added 18.4.19
+    public DateTime ApprovedOn
+    {
+        get
+        {
+            return this._CreatedOn.HasValue ? this._CreatedOn.Value : DateTime.Now;
+        }
+        set
+        {
+            this._CreatedOn = value;
+        }
+    }
     public long FinYearID { get; set; }
     public string FinYear { get; set; }
     public long ParentDocID { get; set; }

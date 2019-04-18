@@ -309,8 +309,10 @@ namespace DOCMS.Controllers
             long docid = default(long);
             try
             {
+                var userid = GlobalSettings.oUserData.ID;
+
                 long.TryParse(Encryption64.DecryptQueryString(key), out docid);
-                var result = DBOperations<Document>.DMLOperation(new Document() { Opmode = 6, IsUploadApproved = key1, DocID = docid }, Constant.usp_DocumentManager);
+                var result = DBOperations<Document>.DMLOperation(new Document() { Opmode = 6, IsUploadApproved = key1, DocID = docid, ApprovedBy=userid }, Constant.usp_DocumentManager);
                 if (result > default(int))
                     return Json(new { Success = 1, Message = "Approval status has been updated for the document" }, JsonRequestBehavior.AllowGet);
                 else
@@ -527,6 +529,7 @@ namespace DOCMS.Controllers
                 postData.DocDate = docdate;
                 postData.Opmode = 3;
                 postData.ModifiedBy = GlobalSettings.oUserData.ID;
+                postData.ApprovedBy = GlobalSettings.oUserData.ID;
                 var result = DBOperations<Document>.DMLOperation(postData, Constant.usp_DocumentManager, DMLOperationFlag.Update);
                 if (result > default(int))
                     return Json(new { Success = 1, Message = "Data saved successfully" });

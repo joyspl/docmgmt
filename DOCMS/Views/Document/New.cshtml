@@ -371,24 +371,27 @@
             var $this = $(this);
             var aid = $(this).attr("data-id");
             var did = $(this).attr("data-did");
-            $.ajax({
-                url: "@Url.Action("AttachmentDelete", "Document", new { area = "" })" + "?id=" + aid + "&did=" + did,
-                type: "GET"
-            }).done(function (data) {
-                if (data.Success > 0) {
-                    try {
-                        $($this).closest("tr.tbratt").remove();
-                        alertInfo("success", data.Message, false);
-                        if ($(".dvattach").find("table.table-striped >tbody >tr").length <= 0) {
-                            $(".dvattach").empty();
-                            $("#btnSave").hide();
-                            DeleteDoc(did);
-                        }
-                    } catch (ex) { }
-                } else {
-                    alertInfo("error", data.Message, false);
-                }
-            });
+            var r = confirm("Are you sure to delete?"); // added on 29.3.19
+            if (r == true) { // condition added on 29.3.19
+                $.ajax({
+                    url: "@Url.Action("AttachmentDelete", "Document", new { area = "" })" + "?id=" + aid + "&did=" + did,
+                    type: "GET"
+                }).done(function (data) {
+                    if (data.Success > 0) {
+                        try {
+                            $($this).closest("tr.tbratt").remove();
+                            alertInfo("success", data.Message, false);
+                            if ($(".dvattach").find("table.table-striped >tbody >tr").length <= 0) {
+                                $(".dvattach").empty();
+                                $("#btnSave").hide();
+                                DeleteDoc(did);
+                            }
+                        } catch (ex) { }
+                    } else {
+                        alertInfo("error", data.Message, false);
+                    }
+                });
+            } 
         });
 
         $(document).off("change", "#ddlSubType").on("change", "#ddlSubType", function (e) {
