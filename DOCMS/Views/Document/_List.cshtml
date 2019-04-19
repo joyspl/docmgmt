@@ -43,6 +43,17 @@
             <td>@(item.TotalAttachment > default(long) ? @Html.Raw(string.Format("<a title=\"View Attachment(s)\" href=\"javascript:void(0);\">{0}&nbsp;<i class=\"fa fa-paperclip\"></i></a>", item.TotalAttachment.ToString())) : @Html.Raw(default(long).ToString()))</td>
             <td title="@item.CreatedByFullName">@Utility.Truncate(item.CreatedByFullName)</td>
             <td>@item.CreatedOn.ToString("dd/MM/yyyy hh:mm tt")</td>
+            
+            @if (item.IsUploadApproved > default(int))
+            {
+              <td title="@item.ApprovedByFullName">@Utility.Truncate(item.ApprovedByFullName)</td>
+              <td>@item.ApprovedOn.ToString("dd/MM/yyyy hh:mm tt")</td>
+            }
+            else
+            {
+                <td></td>
+                <td></td>
+            }
         </tr>
     }
 }

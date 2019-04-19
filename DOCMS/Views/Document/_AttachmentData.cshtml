@@ -7,6 +7,7 @@
     string Info1 = ConfigurationManager.AppSettings["Info1DefaultText"];
     string Info2 = ConfigurationManager.AppSettings["Info2DefaultText"];
     string Info3 = ConfigurationManager.AppSettings["Info3DefaultText"];
+    string Info4 = ConfigurationManager.AppSettings["Info4DefaultText"];
     try
     {
         obj = DBOperations<Document>.GetSpecific(new Document() { DocID = Model.Item1.DocID, Opmode = 1 }, Constant.usp_DocumentManager);
@@ -19,6 +20,7 @@
             Info1 = objam.AttachInfo1Name;
             Info2 = objam.AttachInfo2Name;
             Info3 = objam.AttachInfo3Name;
+            Info4 = objam.AttachInfo4Name;
         }
     }
     catch { }
@@ -58,6 +60,20 @@
                         <label class="col-sm-4 form-control-label">@(Info3)</label>
                         <div class="col-sm-8">
                             <textarea class="form-control" id="txtAttachInfo3" style="text-transform: uppercase;">@Model.Item1.AttachInfo3</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        @if(Info4=="")
+                        {
+                           <label class="col-sm-4 form-control-label">@ConfigurationManager.AppSettings["Info4DefaultText"]</label> 
+                        }
+                        else
+                        {
+                            <label class="col-sm-4 form-control-label">@(Info4)</label>
+                        }
+                        
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="txtAttachInfo4" style="text-transform: uppercase;">@Model.Item1.AttachInfo4</textarea>
                         </div>
                     </div>
                     <div class=" line"></div>

@@ -65,6 +65,8 @@
                                             <th>Attachments</th>
                                             <th>Created&nbsp;By</th>
                                             <th>Created&nbsp;On</th>
+                                            <th>Approved&nbsp;By</th>
+                                            <th>Approved On&nbsp;On</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -137,6 +139,7 @@
                     info1: $("#txtAttachInfo1").val().trim().toUpperCase(),
                     info2: $("#txtAttachInfo2").val().trim().toUpperCase(),
                     info3: $("#txtAttachInfo3").val().trim().toUpperCase(),
+                    info4: $("#txtAttachInfo4").val().trim().toUpperCase(),
                     appstt: ($("#ddlApproval").val() * 1)
                 },
                 type: "GET",
@@ -160,6 +163,7 @@
                         info1: $("#txtAttachInfo1").val().trim().toUpperCase(),
                         info2: $("#txtAttachInfo2").val().trim().toUpperCase(),
                         info3: $("#txtAttachInfo3").val().trim().toUpperCase(),
+                        info4: $("#txtAttachInfo4").val().trim().toUpperCase(),
                         appstt: ($("#ddlApproval").val() * 1)
                     },
                     type: "GET",
@@ -339,6 +343,7 @@
                     $("#txtAttachInfo1").removeAttr("placeholder").attr("placeholder", data.Info1);
                     $("#txtAttachInfo2").removeAttr("placeholder").attr("placeholder", data.Info2);
                     $("#txtAttachInfo3").removeAttr("placeholder").attr("placeholder", data.Info3);
+                    $("#txtAttachInfo4").removeAttr("placeholder").attr("placeholder", data.Info4);
                 } catch (ex) { }
             });
         });

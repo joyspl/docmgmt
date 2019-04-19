@@ -22,6 +22,7 @@ public class Document : ModelBase
     // added 18.4.19
     public long ApprovedBy { get; set; }
     // added 18.4.19
+    public string ApprovedByFullName { get; set; }
     public DateTime ApprovedOn
     {
         get
@@ -88,6 +89,7 @@ public class Document : ModelBase
     public string AttachInfo1 { get; set; }
     public string AttachInfo2 { get; set; }
     public string AttachInfo3 { get; set; }
+    public string AttachInfo4 { get; set; }
 
     [XmlIgnore, JsonIgnore]
     public int Opmode { get; set; }
@@ -139,6 +141,8 @@ public class AttachmentFile : ModelBase
     public string AttachInfo1 { get; set; }
     public string AttachInfo2 { get; set; }
     public string AttachInfo3 { get; set; }
+    // added 19.04.19
+    public string AttachInfo4 { get; set; }
     public string FileSizeBytes { get; set; }
 
     [XmlIgnore, JsonIgnore]
@@ -152,6 +156,8 @@ public class AttachInfoMap
     public string AttachInfo1Name { get; set; }
     public string AttachInfo2Name { get; set; }
     public string AttachInfo3Name { get; set; }
+    // added 19.04.19
+    public string AttachInfo4Name { get; set; }
 
     [XmlIgnore, JsonIgnore]
     public int Opmode { get; set; }

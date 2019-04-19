@@ -16,7 +16,7 @@ namespace DOCMS.Controllers
     [SessionAuthorize]
     public class DocumentController : Controller
     {
-        public ActionResult GetTotalDocCount(int firstload = 1, int pageNo = 1, string dtfrm = "", string dtto = "", long finyear = 0, long orgid = 0, long deptid = 0, long prjid = 0, long subtypeid = 0, string docno = "", string info1 = "", string info2 = "", string info3 = "", int appstt = 2)
+        public ActionResult GetTotalDocCount(int firstload = 1, int pageNo = 1, string dtfrm = "", string dtto = "", long finyear = 0, long orgid = 0, long deptid = 0, long prjid = 0, long subtypeid = 0, string docno = "", string info1 = "", string info2 = "", string info3 = "", int appstt = 2 , string info4 = "")
         {
             List<Document> lst = new List<Document>();
             string sortExpression = string.Empty;
@@ -101,6 +101,10 @@ namespace DOCMS.Controllers
                 {
                     conditionExpression += string.Format(@"AND a.AttachInfo3 LIKE '%{0}%' ESCAPE '\' ", info3.Trim().ToUpper().Replace("[", @"\[").Replace("]", @"\]"));
                 }
+                if (!string.IsNullOrWhiteSpace(info4))
+                {
+                    conditionExpression += string.Format(@"AND a.AttachInfo4 LIKE '%{0}%' ESCAPE '\' ", info4.Trim().ToUpper().Replace("[", @"\[").Replace("]", @"\]"));
+                }
 
                 /*if (GlobalSettings.oUserData.RoleID != (long)Role.BuiltinAdmin)
                 {
@@ -148,7 +152,7 @@ namespace DOCMS.Controllers
             return Json(new { Success = 1, Message = TotalRecords }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Index(int firstload = 1, int pageNo = 1, string dtfrm = "", string dtto = "", long finyear = 0, long orgid = 0, long deptid = 0, long prjid = 0, long subtypeid = 0, string docno = "", string info1 = "", string info2 = "", string info3 = "", int appstt = 2)
+        public ActionResult Index(int firstload = 1, int pageNo = 1, string dtfrm = "", string dtto = "", long finyear = 0, long orgid = 0, long deptid = 0, long prjid = 0, long subtypeid = 0, string docno = "", string info1 = "", string info2 = "", string info3 = "", int appstt = 2, string info4 = "")
         {
             List<Document> lst = new List<Document>();
             string sortExpression = string.Empty;
@@ -239,6 +243,10 @@ namespace DOCMS.Controllers
                 if (!string.IsNullOrWhiteSpace(info3))
                 {
                     conditionExpression += string.Format(@"AND a.AttachInfo3 LIKE '%{0}%' ESCAPE '\' ", info3.Trim().ToUpper().Replace("[", @"\[").Replace("]", @"\]"));
+                }
+                if (!string.IsNullOrWhiteSpace(info4))
+                {
+                    conditionExpression += string.Format(@"AND a.AttachInfo4 LIKE '%{0}%' ESCAPE '\' ", info4.Trim().ToUpper().Replace("[", @"\[").Replace("]", @"\]"));
                 }
 
                 /*if (GlobalSettings.oUserData.RoleID != (long)Role.BuiltinAdmin)

@@ -123,6 +123,7 @@
                 postData.AttachInfo1 = $("#txtAttachInfo1").val().trim().toUpperCase();
                 postData.AttachInfo2 = $("#txtAttachInfo2").val().trim().toUpperCase();
                 postData.AttachInfo3 = $("#txtAttachInfo3").val().trim().toUpperCase();
+                postData.AttachInfo4 = $("#txtAttachInfo4").val().trim().toUpperCase();
 
                 $.ajax({
                     url: "@Url.Action("SaveAttachmentInfo", "Document", new { area = "" })",
