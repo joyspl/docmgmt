@@ -130,7 +130,9 @@ namespace DOCMS.Controllers
                         conditionExpression = string.Format(@" AND d.IsUploadApproved = 1 {0}", conditionExpression);
                         break;
                     case 2:
-                        conditionExpression = string.Format(@" AND d.IsUploadApproved = 0 {0}", conditionExpression);
+                        //conditionExpression = string.Format(@" AND d.IsUploadApproved = 0 {0}", conditionExpression);
+                        // modified on 22.04.19
+                        conditionExpression = string.Format(@" AND d.IsUploadApproved = 0 {0} AND IsChecked>0", conditionExpression);
                         break;
                     default:
                         break;
@@ -273,7 +275,9 @@ namespace DOCMS.Controllers
                         conditionExpression = string.Format(@" AND d.IsUploadApproved = 1 {0}", conditionExpression);
                         break;
                     case 2:
-                        conditionExpression = string.Format(@" AND d.IsUploadApproved = 0 {0}", conditionExpression);
+                       // conditionExpression = string.Format(@" AND d.IsUploadApproved = 0 {0}", conditionExpression);
+                        // modified on 22.04.19
+                        conditionExpression = string.Format(@" AND d.IsUploadApproved = 0 {0} AND IsChecked>0", conditionExpression);
                         break;
                     default:
                         break;
@@ -538,6 +542,7 @@ namespace DOCMS.Controllers
                 postData.Opmode = 3;
                 postData.ModifiedBy = GlobalSettings.oUserData.ID;
                 postData.ApprovedBy = GlobalSettings.oUserData.ID;
+                postData.CheckedBy = GlobalSettings.oUserData.ID;
                 var result = DBOperations<Document>.DMLOperation(postData, Constant.usp_DocumentManager, DMLOperationFlag.Update);
                 if (result > default(int))
                     return Json(new { Success = 1, Message = "Data saved successfully" });

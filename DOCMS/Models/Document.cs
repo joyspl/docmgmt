@@ -34,6 +34,25 @@ public class Document : ModelBase
             this._CreatedOn = value;
         }
     }
+
+    // added 22.4.19
+
+    public int IsChecked { get; set; }
+    public long CheckedBy { get; set; }
+    
+    public string CheckedByFullName { get; set; }
+    public DateTime CheckedOn
+    {
+        get
+        {
+            return this._CreatedOn.HasValue ? this._CreatedOn.Value : DateTime.Now;
+        }
+        set
+        {
+            this._CreatedOn = value;
+        }
+    }
+    //--------
     public long FinYearID { get; set; }
     public string FinYear { get; set; }
     public long ParentDocID { get; set; }

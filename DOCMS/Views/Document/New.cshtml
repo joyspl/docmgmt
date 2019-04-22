@@ -86,6 +86,25 @@
                                 </div>
                             </div>
                             <div class="line dvapproval" @((Model.DocID > default(long)) ? @Html.Raw("") : @Html.Raw("style=\"display: none;\""))></div>
+
+                            <div class="form-group row dvapproval" @((Model.DocID > default(long)) ? @Html.Raw("") : @Html.Raw("style=\"display: none;\""))>
+                                <label class="col-sm-3 form-control-label">Is Checked</label><br />
+                                <div class="col-sm-9">
+                                    <div class="i-checks">
+                                        @if(GlobalSettings.oUserData.RoleID==1) // super admin can unchecked
+                                        {
+                                            <input id="IsNewChecked" type="checkbox" value="" class="checkbox-template" @(Model.IsChecked > default(int) ? "checked " : "") />
+                                        }
+                                        else
+                                        {
+                                            <input id="IsNewChecked" type="checkbox" value="" class="checkbox-template" @(Model.IsChecked > default(int) ? "checked disabled" : "") />
+                                        }
+                                        
+                                        <label for="IsNewChecked"><small class="text-primary">&nbsp;</small></label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group row dvapproval" @((Model.DocID > default(long)) ? @Html.Raw("") : @Html.Raw("style=\"display: none;\""))>
                                 <label class="col-sm-3 form-control-label">Is Approved</label><br />
                                 <div class="col-sm-9">
@@ -95,6 +114,9 @@
                                     </div>
                                 </div>
                             </div>
+
+                           
+
                             <div class="form-group row dvapproval" @((Model.DocID > default(long)) ? @Html.Raw("") : @Html.Raw("style=\"display: none;\""))>
                                 <div class="col-sm-12" style="text-align: center;">
                                     <small class="text-primary">Once approved, there is no other option to revoke the approval without the permission of @(Utility.GetCustomDescription(Role.BuiltinAdmin))</small>
@@ -498,6 +520,8 @@
                 postData.FileNo = $("#txtFileNo").val().trim().toUpperCase();
                 postData.IsUploadApproved = $("#chkIsApproved").is(":checked") ? 1 : 0;
 
+                // added 22.04.19
+                postData.IsChecked = $("#IsNewChecked").is(":checked") ? 1 : 0;
                 $.ajax({
                     url: "@Url.Action("SaveDoc", "Document", new { area = "" })",
                     type: "POST",
@@ -510,6 +534,11 @@
                             $("#chkIsApproved").prop("disabled", true);
                         } else {
                             $("#chkIsApproved").prop("disabled", false);
+                        }
+                        if ($("#IsNewChecked").is(":checked")) {
+                            $("#IsNewChecked").prop("disabled", true);
+                        } else {
+                            $("#IsNewChecked").prop("disabled", false);
                         }
                        window.location.href = "@Url.Action("New", "Document", new { area = "" })?id=" + $("#hdnID").val();
                         
